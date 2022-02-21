@@ -2,7 +2,7 @@ const path = require('path')
     , HtmlWebpackPlugin = require('html-webpack-plugin')
     , CopyPlugin = require("copy-webpack-plugin");
 
-const { webpack } = require('webpack')
+const webpack = require('webpack')
     , { homepage } = require('./package.json');
 
 module.exports = {
@@ -21,7 +21,7 @@ module.exports = {
             ],
         }),
         new webpack.DefinePlugin({
-            'process.env.BASE_URL': homepage
+            'process.env.BASE_PATH': JSON.stringify(homepage)
         })
     ],
     module: {
