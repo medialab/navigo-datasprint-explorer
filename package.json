@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Explore the Navigo database",
   "main": "index.js",
-  "homepage": "https://medialab.github.io/navigo-datasprint-explorer",
+  "homepage": "https://medialab.github.io/navigo-datasprint-explorer/",
   "scripts": {
     "start": "./node_modules/.bin/http-server ./dist/",
     "build": "webpack --config webpack.config.prod.js",
