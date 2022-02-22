@@ -74,7 +74,9 @@ export default function App({
         let list = new Set();
 
         for (let i = 0; i < data.length; i++) {
-            list.add(data[i][field])
+            const value = data[i][field];
+            if (value === '') { continue; }
+            list.add(value);
         }
 
         setXValues(Array.from(list).sort())
@@ -96,7 +98,9 @@ export default function App({
         let list = new Set();
 
         for (let i = 0; i < data.length; i++) {
-            list.add(data[i][field])
+            const value = data[i][field];
+            if (value === '') { continue; }
+            list.add(value);
         }
 
         setYValues(Array.from(list).sort())
