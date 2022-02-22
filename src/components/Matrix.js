@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useRef, useEffect } from 'react';
+import slug from 'slug';
 import { VegaLite } from 'react-vega';
 
 export default function Matrix({
     control,
-    data:inputData
+    data: inputData
 }) {
     for (const key in control) {
         try {
@@ -13,10 +14,13 @@ export default function Matrix({
         }
     }
 
+    console.log(control.y,
+        control.x);
+
     let spec = {
-        // "width": 800,
-        // "height": 1000,
-        "title": `${control.x.title} comparé à ${control.y.title} en ${control.year.filter.equal} filtré par action ${control.action.filter.equal} et pour l'ensemble ${control.filter.filter.equal}`,
+        // "width": 1500,
+        'padding': { 'top': 10, 'left': 50, 'bottom': 50, right: 10 },
+        "title": `${control.x.title} comparé à ${control.y.title} en ${control.year.filter.equal} filtré par action ${control.action.filter.equal} et pour l'ensemble ${control.filter.filter.field}`,
         "data": { "name": "table" },
         "mark": "rect",
         "encoding": {
@@ -27,7 +31,9 @@ export default function Matrix({
         'transform': [
             control.filter,
             control.year,
-            control.action
+            control.action,
+            { "filter": `datum.${control.x.field} != ''` },
+            { "filter": `datum.${control.y.field} != ''` },
         ],
         "config": {
             "axis": { "grid": true, "tickBand": "extent" }
@@ -41,17 +47,23 @@ export default function Matrix({
     }
 
     useEffect(() => {
-        console.log(spec);
+        // console.log(spec);
     })
 
     return (
         <div
             className='column'
             style={{
-                flex: '4'
+                flex: '4',
+                overflow: 'auto'
             }}
         >
-            <VegaLite spec={spec} data={data} />
+            <VegaLite
+                spec={spec}
+                data={data}
+                renderer="svg"
+                downloadFileName={slug(spec.title)}
+            />
         </div>
     );
 }
