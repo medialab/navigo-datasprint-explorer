@@ -5,12 +5,12 @@ import fields from '../navigo-pointcalls-fields.json'
 export default function ControlBar({
     control
 }) {
-    const [year, setYear] = control.year
-    const [action, setAction] = control.action
-    const [filter, setFilter] = control.filter
-    const [x, setX] = control.x
-    const [y, setY] = control.y
-    const [aggregate, setAggregate] = control.aggregate
+    const [year, setYear] = control.year;
+    const [action, setAction] = control.action;
+    const [filter, setFilter] = control.filter;
+    const [x, setX] = control.x;
+    const [y, setY] = control.y;
+    const [aggregate, setAggregate] = control.aggregate;
 
     return (
         <form

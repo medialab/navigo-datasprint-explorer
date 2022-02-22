@@ -37,14 +37,8 @@ export default function App ({
     );
 
     useEffect(() => {
-        let isCanceled = false;
-
         get(process.env.BASE_PATH + 'data/matrix-pointcalls.csv')
             .then(({ data:str }) => {
-                if (isCanceled === true) {
-                    return;
-                }
-
                 try {
                     const csv = csvParse(str);
                     setData(csv);
@@ -58,8 +52,6 @@ export default function App ({
                 console.error(error);
                 setLoadingState('failed');
             })
-
-            return () => {isCanceled = true}
     }, [])
 
     if (loadingState === 'loading') {
