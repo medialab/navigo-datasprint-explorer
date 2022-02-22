@@ -14,9 +14,6 @@ export default function Matrix({
         }
     }
 
-    console.log(control.y,
-        control.x);
-
     let spec = {
         // "width": 1500,
         'padding': { 'top': 10, 'left': 50, 'bottom': 50, right: 10 },
@@ -32,8 +29,10 @@ export default function Matrix({
             control.filter,
             control.year,
             control.action,
-            { "filter": `datum.${control.x.field} != ''` },
-            { "filter": `datum.${control.y.field} != ''` },
+            ...(control.displayNullValues === false ? [
+                { "filter": `datum.${control.x.field} != ''` },
+                { "filter": `datum.${control.y.field} != ''` }
+            ] : [])
         ],
         "config": {
             "axis": { "grid": true, "tickBand": "extent" }

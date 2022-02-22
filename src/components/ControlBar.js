@@ -11,6 +11,7 @@ export default function ControlBar({
     const [x, setX] = control.x;
     const [y, setY] = control.y;
     const [aggregate, setAggregate] = control.aggregate;
+    const [displayNullValues, setDisplayNullValues] = control.displayNullValues;
 
     return (
         <form
@@ -122,6 +123,16 @@ export default function ControlBar({
                     )
                 }
             />
+
+            <label className="checkbox">
+                <input
+                    type="checkbox"
+                    checked={displayNullValues}
+                    onChange={(e) => { setDisplayNullValues(!displayNullValues) }}
+                />
+
+                Afficher les valeurs <em>nulles</em>
+            </label>
         </form>
     );
 }

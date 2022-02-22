@@ -8,8 +8,8 @@ import Matrix from './Matrix';
 
 import fields from '../navigo-pointcalls-fields.json'
 
-export default function App ({
-    
+export default function App({
+
 }) {
     const [data, setData] = useState(null);
     /**
@@ -35,10 +35,11 @@ export default function App ({
     const [aggregate, setAggregate] = useState(
         `{"aggregate": "${fields.aggregation[0].aggregate}", "field": "${fields.aggregation[0].field}", "title": "${fields.aggregation[0].label}"}`
     );
+    const [displayNullValues, setDisplayNullValues] = useState(true);
 
     useEffect(() => {
         get(process.env.BASE_PATH + 'data/matrix-pointcalls.csv')
-            .then(({ data:str }) => {
+            .then(({ data: str }) => {
                 try {
                     const csv = csvParse(str);
                     setData(csv);
@@ -53,6 +54,10 @@ export default function App ({
                 setLoadingState('failed');
             })
     }, [])
+
+    useEffect(() => {
+        console.log(displayNullValues);
+    })
 
     if (loadingState === 'loading') {
         return <div>Chargement en cours</div>
@@ -74,7 +79,8 @@ export default function App ({
                         filter: [filter, setFilter],
                         x: [x, setX],
                         y: [y, setY],
-                        aggregate: [aggregate, setAggregate]
+                        aggregate: [aggregate, setAggregate],
+                        displayNullValues: [displayNullValues, setDisplayNullValues]
                     }}
                 />
 
@@ -86,7 +92,8 @@ export default function App ({
                         filter: filter,
                         x: x,
                         y: y,
-                        aggregate: aggregate
+                        aggregate: aggregate,
+                        displayNullValues: displayNullValues
                     }}
                 />
             </main>
