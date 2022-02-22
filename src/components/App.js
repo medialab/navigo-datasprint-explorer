@@ -126,8 +126,10 @@ export default function App({
                         displayNullValues: [displayNullValues, setDisplayNullValues],
                         additionalFilters: [additionalFilters, setAdditionalFilters]
                     }}
-                    xValues={xValues}
-                    yValues={yValues}
+                    filterValues={[
+                        ...xValues.map((value) => { return { value: value, field: 'x' } }),
+                        ...yValues.map((value) => { return { value: value, field: 'y' } })
+                    ]}
                 />
 
                 <Matrix

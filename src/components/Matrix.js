@@ -37,9 +37,14 @@ export default function Matrix({
                 { "filter": `datum.${control.y.field} != ''` }
             ] : []),
             ...control.additionalFilters
-                .filter(filter => filter.action === 'exclude')
+                .filter(filter => filter.action === 'exclude' && filter.field === 'x')
                 .map((filter) => {
                     return { "filter": `datum.${control.x.field} != "${filter.value}"` }
+                }),
+            ...control.additionalFilters
+                .filter(filter => filter.action === 'exclude' && filter.field === 'y')
+                .map((filter) => {
+                    return { "filter": `datum.${control.y.field} != "${filter.value}"` }
                 })
         ],
         "config": {

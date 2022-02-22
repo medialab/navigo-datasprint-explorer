@@ -5,7 +5,7 @@ import fields from '../navigo-pointcalls-fields.json'
 
 export default function ControlBar({
     control,
-    xValues
+    filterValues
 }) {
     const [year, setYear] = control.year;
     const [action, setAction] = control.action;
@@ -16,23 +16,53 @@ export default function ControlBar({
     const [displayNullValues, setDisplayNullValues] = control.displayNullValues;
     const [additionalFilters, setAdditionalFilters] = control.additionalFilters
 
-    function addInputFilter () {
-        setAdditionalFilters([
-            ...additionalFilters,
-            { value: '', action: 'exclude' }
-        ]);
+    function addInputFilter(field) {
+        switch (field) {
+            case 'x':
+                setAdditionalFilters([
+                    ...additionalFilters,
+                    { value: '', action: 'exclude', field: field }
+                ])
+                break;
+
+            case 'y':
+                setAdditionalFilters([
+                    ...additionalFilters,
+                    { value: '', action: 'exclude', field: field }
+                ]);
+                break;
+        }
     }
 
-    function onChangeInputFilter (value, inputKey) {
-        setAdditionalFilters(
-            additionalFilters.map((filter, i) => {
-                if (i === inputKey) {
-                    filter.value = value;
-                    return filter;
-                }
-                return filter;
-            })
-        );
+    function onChangeInputFilter(value, inputKey, field) {
+        switch (field) {
+            case 'x':
+                setAdditionalFilters(
+                    additionalFilters.map((filter, i) => {
+                        if (i === inputKey) {
+                            filter.value = value;
+                            filter.field = field;
+                            return filter;
+                        }
+                        return filter;
+                    })
+                );
+                break;
+
+            case 'y':
+                setAdditionalFilters(
+                    additionalFilters.map((filter, i) => {
+                        if (i === inputKey) {
+                            filter.value = value;
+                            filter.field = field;
+                            return filter;
+                        }
+                        return filter;
+                    })
+                );
+                break;
+        }
+
     }
 
     return (
@@ -157,27 +187,30 @@ export default function ControlBar({
                 Afficher les valeurs <em>nulles</em>
             </label>
 
-            <button className="button is-primary" onClick={addInputFilter}>Ajouter un filtre</button>
+            <button className="button is-primary" onClick={() => addInputFilter('x')}>Ajouter un filtre X</button>
+            <button className="button is-primary" onClick={() => addInputFilter('y')}>Ajouter un filtre Y</button>
 
             {
-                additionalFilters.map(({ value }, i) =>
-                <ControSelect
-                    label='Filtrer X par'
-                    name={`filter-${i}`}
-                    key={i}
-                    value={value}
-                    setter={(value) => onChangeInputFilter(value, i)}
-                    options={
-                        xValues.map(
-                            (value) => {
-                                return {
-                                    value: value,
-                                    label: value
-                                }
-                            }
-                        )
-                    }
-                />)
+                additionalFilters.map(({ value, field }, i) =>
+                    <ControSelect
+                        label={`Filtrer ${field} par`}
+                        name={`filter-${i}`}
+                        key={i}
+                        value={value}
+                        setter={(value) => onChangeInputFilter(value, i, field)}
+                        options={
+                            filterValues
+                                .filter(filter => filter.field === field)
+                                .map(
+                                    ({value}) => {
+                                        return {
+                                            value: value,
+                                            label: value
+                                        }
+                                    }
+                                )
+                        }
+                    />)
             }
         </form>
     );
