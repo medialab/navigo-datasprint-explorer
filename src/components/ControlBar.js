@@ -4,7 +4,8 @@ import ControlInput from './controlInput';
 import fields from '../navigo-pointcalls-fields.json'
 
 export default function ControlBar({
-    control
+    control,
+    xValues
 }) {
     const [year, setYear] = control.year;
     const [action, setAction] = control.action;
@@ -22,9 +23,7 @@ export default function ControlBar({
         ]);
     }
 
-    function onChangeInputFilter (event, inputKey) {
-        const value = event.target.value;
-
+    function onChangeInputFilter (value, inputKey) {
         setAdditionalFilters(
             additionalFilters.map((filter, i) => {
                 if (i === inputKey) {
@@ -162,15 +161,24 @@ export default function ControlBar({
 
             {
                 additionalFilters.map(({ value }, i) =>
-                <ControlInput
-                    label='Filtrer les résultats'
-                    key={i}
+                <ControSelect
+                    label='Filtrer X par'
                     name={`filter-${i}`}
+                    key={i}
                     value={value}
-                    onChange={(e) => { onChangeInputFilter(e, i) }}
+                    setter={(value) => onChangeInputFilter(value, i)}
+                    options={
+                        xValues.map(
+                            (value) => {
+                                return {
+                                    value: value,
+                                    label: value
+                                }
+                            }
+                        )
+                    }
                 />)
             }
-            
         </form>
     );
 }

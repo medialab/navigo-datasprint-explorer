@@ -37,6 +37,8 @@ export default function App({
     );
     const [displayNullValues, setDisplayNullValues] = useState(true);
     const [additionalFilters, setAdditionalFilters] = useState([]);
+    const [xValues, setXValues] = useState([]);
+    const [yValues, setYValues] = useState([]);
 
     useEffect(() => {
         get(process.env.BASE_PATH + 'data/matrix-pointcalls.csv')
@@ -54,7 +56,51 @@ export default function App({
                 console.error(error);
                 setLoadingState('failed');
             })
-    }, [])
+    }, []);
+
+    useEffect(() => {
+        if (loadingState !== 'success') { return; }
+
+        let field;
+
+        try {
+            const result = JSON.parse(x);
+            field = result.field;
+        } catch (error) {
+            console.error(error);
+            setXValues([])
+        }
+        
+        let list = new Set();
+
+        for (let i = 0; i < data.length; i++) {
+            list.add(data[i][field])
+        }
+
+        setXValues(Array.from(list).sort())
+    }, [x, loadingState]);
+
+    useEffect(() => {
+        if (loadingState !== 'success') { return; }
+
+        let field;
+
+        try {
+            const result = JSON.parse(y);
+            field = result.field;
+        } catch (error) {
+            console.error(error);
+            setYValues([])
+        }
+        
+        let list = new Set();
+
+        for (let i = 0; i < data.length; i++) {
+            list.add(data[i][field])
+        }
+
+        setYValues(Array.from(list).sort())
+    }, [y, loadingState]);
 
     if (loadingState === 'loading') {
         return <div>Chargement en cours</div>
@@ -80,6 +126,8 @@ export default function App({
                         displayNullValues: [displayNullValues, setDisplayNullValues],
                         additionalFilters: [additionalFilters, setAdditionalFilters]
                     }}
+                    xValues={xValues}
+                    yValues={yValues}
                 />
 
                 <Matrix

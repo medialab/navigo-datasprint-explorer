@@ -19,7 +19,6 @@ export default function Matrix({
     }
 
     let spec = {
-        // "width": 1500,
         'padding': { 'top': 10, 'left': 50, 'bottom': 50, right: 10 },
         "title": `${control.x.title} comparé à ${control.y.title} en ${control.year.filter.equal} filtré par action ${control.action.filter.equal} et pour l'ensemble ${control.filter.filter.field}`,
         "data": { "name": "table" },
