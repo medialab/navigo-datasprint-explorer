@@ -1,4 +1,11 @@
-.vega-embed summary {
-    left: 0px !important;
-    right: unset !important;
+body {
+    padding: 1em !important;
+}
+
+details {
+    margin: 2em 0;
+}
+
+summary {
+    margin: 0.5em 0;
 }

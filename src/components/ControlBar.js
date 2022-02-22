@@ -81,7 +81,7 @@ export default function ControlBar({
         >
 
             <ControSelect
-                label='Année'
+                label="Voir l'année"
                 name='year'
                 value={year}
                 setter={setYear}
@@ -98,7 +98,7 @@ export default function ControlBar({
             />
 
             <ControSelect
-                label='Action'
+                label='Voir les pointcalls avec action'
                 name='action'
                 value={action}
                 setter={setAction}
@@ -115,7 +115,7 @@ export default function ControlBar({
             />
 
             <ControSelect
-                label='Filtres'
+                label='Voir les pointcalls de'
                 name='filter'
                 value={filter}
                 setter={setFilter}
@@ -193,7 +193,7 @@ export default function ControlBar({
             </label>
 
             <details className='block'>
-                <summary>Filters supplémentaires</summary>
+                <summary className='button is-info'>Filtres supplémentaires</summary>
 
                 <div className='buttons'>
                     <button className="button is-primary" onClick={() => addInputFilter('x')}>Ajouter un filtre X</button>
@@ -204,7 +204,7 @@ export default function ControlBar({
                     additionalFilters.map(({ value, field }, i) =>
                         <div style={{ display: 'flex' }} key={i}>
                             <ControSelect
-                                label={`Filtrer ${field} par`}
+                                label={`Exclure de ${field}`}
                                 name={`filter-${i}`}
                                 value={value}
                                 setter={(value) => onChangeInputFilter(value, i, field)}
