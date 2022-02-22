@@ -7,10 +7,14 @@ export default function Matrix({
     data: inputData
 }) {
     for (const key in control) {
+        if (typeof control[key] !== 'string') {
+            continue;
+        }
+
         try {
             control[key] = JSON.parse(control[key]);
         } catch (error) {
-            console.error(error);
+
         }
     }
 
@@ -32,7 +36,12 @@ export default function Matrix({
             ...(control.displayNullValues === false ? [
                 { "filter": `datum.${control.x.field} != ''` },
                 { "filter": `datum.${control.y.field} != ''` }
-            ] : [])
+            ] : []),
+            ...control.additionalFilters
+                .filter(filter => filter.action === 'exclude')
+                .map((filter) => {
+                    return { "filter": `datum.${control.x.field} != "${filter.value}"` }
+                })
         ],
         "config": {
             "axis": { "grid": true, "tickBand": "extent" }
@@ -46,7 +55,7 @@ export default function Matrix({
     }
 
     useEffect(() => {
-        // console.log(spec);
+        console.log(spec);
     })
 
     return (

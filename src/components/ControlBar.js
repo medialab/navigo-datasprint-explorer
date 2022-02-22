@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import ControSelect from './ControlSelect';
+import ControlInput from './controlInput';
 import fields from '../navigo-pointcalls-fields.json'
 
 export default function ControlBar({
@@ -12,6 +13,28 @@ export default function ControlBar({
     const [y, setY] = control.y;
     const [aggregate, setAggregate] = control.aggregate;
     const [displayNullValues, setDisplayNullValues] = control.displayNullValues;
+    const [additionalFilters, setAdditionalFilters] = control.additionalFilters
+
+    function addInputFilter () {
+        setAdditionalFilters([
+            ...additionalFilters,
+            { value: '', action: 'exclude' }
+        ]);
+    }
+
+    function onChangeInputFilter (event, inputKey) {
+        const value = event.target.value;
+
+        setAdditionalFilters(
+            additionalFilters.map((filter, i) => {
+                if (i === inputKey) {
+                    filter.value = value;
+                    return filter;
+                }
+                return filter;
+            })
+        );
+    }
 
     return (
         <form
@@ -20,6 +43,7 @@ export default function ControlBar({
                 flex: '1',
                 minWidth: '250px'
             }}
+            onSubmit={(e) => { e.preventDefault() }}
         >
 
             <ControSelect
@@ -133,6 +157,20 @@ export default function ControlBar({
 
                 Afficher les valeurs <em>nulles</em>
             </label>
+
+            <button className="button is-primary" onClick={addInputFilter}>Ajouter un filtre</button>
+
+            {
+                additionalFilters.map(({ value }, i) =>
+                <ControlInput
+                    label='Filtrer les résultats'
+                    key={i}
+                    name={`filter-${i}`}
+                    value={value}
+                    onChange={(e) => { onChangeInputFilter(e, i) }}
+                />)
+            }
+            
         </form>
     );
 }

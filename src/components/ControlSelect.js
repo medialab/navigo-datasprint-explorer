@@ -20,7 +20,7 @@ export default function ControlSelect ({
                 flexDirection: 'column'
             }}
         >
-            <label>{ label }</label>
+            <label className='label'>{ label }</label>
             <div className="select">
                 <select style={{ width: '100%' }} value={value} onChange={onChange} name={name}>
                     {

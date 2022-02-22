@@ -36,6 +36,7 @@ export default function App({
         `{"aggregate": "${fields.aggregation[0].aggregate}", "field": "${fields.aggregation[0].field}", "title": "${fields.aggregation[0].label}"}`
     );
     const [displayNullValues, setDisplayNullValues] = useState(true);
+    const [additionalFilters, setAdditionalFilters] = useState([]);
 
     useEffect(() => {
         get(process.env.BASE_PATH + 'data/matrix-pointcalls.csv')
@@ -54,10 +55,6 @@ export default function App({
                 setLoadingState('failed');
             })
     }, [])
-
-    useEffect(() => {
-        console.log(displayNullValues);
-    })
 
     if (loadingState === 'loading') {
         return <div>Chargement en cours</div>
@@ -80,7 +77,8 @@ export default function App({
                         x: [x, setX],
                         y: [y, setY],
                         aggregate: [aggregate, setAggregate],
-                        displayNullValues: [displayNullValues, setDisplayNullValues]
+                        displayNullValues: [displayNullValues, setDisplayNullValues],
+                        additionalFilters: [additionalFilters, setAdditionalFilters]
                     }}
                 />
 
@@ -93,7 +91,8 @@ export default function App({
                         x: x,
                         y: y,
                         aggregate: aggregate,
-                        displayNullValues: displayNullValues
+                        displayNullValues: displayNullValues,
+                        additionalFilters: additionalFilters
                     }}
                 />
             </main>
