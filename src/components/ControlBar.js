@@ -16,7 +16,7 @@ export default function ControlBar({
     const [displayNullValues, setDisplayNullValues] = control.displayNullValues;
     const [additionalFilters, setAdditionalFilters] = control.additionalFilters
 
-    function addInputFilter(field) {
+    function addInputFilter (field) {
         switch (field) {
             case 'x':
                 setAdditionalFilters([
@@ -34,7 +34,13 @@ export default function ControlBar({
         }
     }
 
-    function onChangeInputFilter(value, inputKey, field) {
+    function removeInputFilter (inputKey) {
+        setAdditionalFilters(
+            additionalFilters.filter((filter, i) => i !== inputKey)
+        )
+    }
+
+    function onChangeInputFilter (value, inputKey, field) {
         switch (field) {
             case 'x':
                 setAdditionalFilters(
@@ -187,31 +193,45 @@ export default function ControlBar({
                 Afficher les valeurs <em>nulles</em>
             </label>
 
-            <button className="button is-primary" onClick={() => addInputFilter('x')}>Ajouter un filtre X</button>
-            <button className="button is-primary" onClick={() => addInputFilter('y')}>Ajouter un filtre Y</button>
+            <details className='block'>
+                <summary>Filters supplémentaires</summary>
 
-            {
-                additionalFilters.map(({ value, field }, i) =>
-                    <ControSelect
-                        label={`Filtrer ${field} par`}
-                        name={`filter-${i}`}
-                        key={i}
-                        value={value}
-                        setter={(value) => onChangeInputFilter(value, i, field)}
-                        options={
-                            filterValues
-                                .filter(filter => filter.field === field)
-                                .map(
-                                    ({value}) => {
-                                        return {
-                                            value: value,
-                                            label: value
-                                        }
-                                    }
-                                )
-                        }
-                    />)
-            }
+                <div className='buttons'>
+                    <button className="button is-primary" onClick={() => addInputFilter('x')}>Ajouter un filtre X</button>
+                    <button className="button is-primary" onClick={() => addInputFilter('y')}>Ajouter un filtre Y</button>
+                </div>
+
+                {
+                    additionalFilters.map(({ value, field }, i) =>
+                        <div style={{ display: 'flex' }} key={i}>
+                            <ControSelect
+                                label={`Filtrer ${field} par`}
+                                name={`filter-${i}`}
+                                value={value}
+                                setter={(value) => onChangeInputFilter(value, i, field)}
+                                options={
+                                    filterValues
+                                        .filter(filter => filter.field === field)
+                                        .map(
+                                            ({value}) => {
+                                                return {
+                                                    value: value,
+                                                    label: value
+                                                }
+                                            }
+                                        )
+                                }
+                            />
+
+                            <button
+                                className="delete"
+                                onClick={() => removeInputFilter(i)}
+                            ></button>
+                        </div>
+                    )
+                }
+            </details>
+
         </form>
     );
 }
