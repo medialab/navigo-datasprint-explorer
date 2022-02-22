@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import ControSelect from './ControlSelect';
-import ControlInput from './controlInput';
 import fields from '../navigo-pointcalls-fields.json'
 
 export default function ControlBar({
