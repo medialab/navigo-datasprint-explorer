@@ -17,6 +17,7 @@ json_content = json.loads(json_file)
 fields = set()
 filters = {}
 
+# Get filters and metas (column head) from the same JSON who display data controls
 for filter in json_content['filters']:
     field = filter['field']
     value = filter['value']
@@ -45,7 +46,7 @@ for year in ['1787', '1789']:
                 '' # initial value for all fields
             )
 
-            # Prendre tous les filters du JSON et les passer dans un if || pour filter les données du CSV
+            # If the line values does not match with any filter, the line is thrown
             filter_test = []
             for meta in filters.keys():
                 filter_value = filters[meta]
@@ -53,15 +54,14 @@ for year in ['1787', '1789']:
                     filter_test.append(True)
                 else:
                     filter_test.append(False)
-
             if any(filter_test) == False:
                 continue
 
             for meta in row.keys():
-                if meta == 'year':
+                if meta == 'year': # add year to metas
                     row[meta] = year
                     continue
-                if meta == 'pointcall_action':
+                if meta == 'pointcall_action': # lowercase to reconcile ex: 'In-out' and 'in-out' values 
                     row[meta] = row_original[meta].lower()
                     continue
                 row[meta] = row_original[meta]
