@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import ControSelect from './ControlSelect';
-import fields from '../navigo-pointcalls-fields.json'
 
 export default function ControlBar({
     control,
-    filterValues
+    filterValues,
+    sourceControl,
+    fields
 }) {
     const [year, setYear] = control.year;
     const [action, setAction] = control.action;
@@ -13,7 +14,8 @@ export default function ControlBar({
     const [y, setY] = control.y;
     const [aggregate, setAggregate] = control.aggregate;
     const [displayNullValues, setDisplayNullValues] = control.displayNullValues;
-    const [additionalFilters, setAdditionalFilters] = control.additionalFilters
+    const [additionalFilters, setAdditionalFilters] = control.additionalFilters;
+    const [source, setSource] = sourceControl;
 
     function addInputFilter (field) {
         switch (field) {
@@ -81,6 +83,26 @@ export default function ControlBar({
         >
 
             <ControSelect
+                label="Source"
+                name='source'
+                value={source.path}
+                setter={(value) => setSource(JSON.parse(value))}
+                options={
+                    [
+                        { label: 'pointcalls', pathData: 'matrix-pointcalls.csv', pathFields: 'navigo-pointcalls-fields.json' },
+                        { label: 'flows', pathData: 'matrix-flows.csv', pathFields: 'navigo-flows-fields.json' }
+                    ].map(
+                        (item) => {
+                            return {
+                                value: JSON.stringify(item),
+                                label: item.label
+                            }
+                        }
+                    )
+                }
+            />
+
+            <ControSelect
                 label="Voir l'année"
                 name='year'
                 value={year}
@@ -89,7 +111,7 @@ export default function ControlBar({
                     fields.years.map(
                         (item) => {
                             return {
-                                value: `{ "filter": { "field": "year", "equal": "${item.value}" } }`,
+                                value: `{ "filter": { "field": "${item.field}", "equal": "${item.value}" } }`,
                                 label: item.label
                             }
                         }
@@ -98,7 +120,7 @@ export default function ControlBar({
             />
 
             <ControSelect
-                label='Voir les pointcalls avec action'
+                label={`Voir les ${source} avec action`}
                 name='action'
                 value={action}
                 setter={setAction}
@@ -106,7 +128,7 @@ export default function ControlBar({
                     fields.actions.map(
                         (item) => {
                             return {
-                                value: `{ "filter": { "field": "pointcall_action", "equal": "${item.value}" } }`,
+                                value: `{ "filter": { "field": "${item.field}", "equal": "${item.value}" } }`,
                                 label: item.label
                             }
                         }
@@ -115,7 +137,7 @@ export default function ControlBar({
             />
 
             <ControSelect
-                label='Voir les pointcalls de'
+                label={`Voir les ${source} de`}
                 name='filter'
                 value={filter}
                 setter={setFilter}

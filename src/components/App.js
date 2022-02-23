@@ -7,12 +7,11 @@ import ControlBar from './ControlBar';
 import Matrix from './Matrix';
 import Histogram from './Histogram';
 
-import fields from '../navigo-pointcalls-fields.json'
-
 export default function App({
 
 }) {
     const [data, setData] = useState(null);
+    const [fields, setFields] = useState(null);
     /**
      * @param {'loading'|'failed'|'success'}
      */
@@ -21,47 +20,79 @@ export default function App({
      * @param {'matrice'|'histogramme'}
      */
     const [viz, setViz] = useState('matrice');
+    /**
+     * @param {'pointcalls'|'flows'}
+     */
+    const [source, setSource] = useState({ label: 'pointcalls', pathData: 'matrix-pointcalls.csv', pathFields: 'navigo-pointcalls-fields.json' });
 
-    const [year, setYear] = useState(
-        `{ "filter": { "field": "year", "equal": "${fields.years[0].value}" } }`
-    );
-    const [action, setAction] = useState(
-        `{ "filter": { "field": "pointcall_action", "equal": "${fields.actions[0].value}" } }`
-    );
-    const [filter, setFilter] = useState(
-        `{"filter": { "field": "${fields.filters[0].field}", "equal": "${fields.filters[0].value}" } }`
-    );
-    const [x, setX] = useState(
-        `{ "field": "${fields.groups[0].field}", "type": "nominal", "axis": { "orient": "top" }, "title": "${fields.groups[0].label}" }`
-    );
-    const [y, setY] = useState(
-        `{ "field": "${fields.groups[1].field}", "type": "nominal", "sort": "-color", "title": "${fields.groups[1].label}" }`
-    );
-    const [aggregate, setAggregate] = useState(
-        `{"aggregate": "${fields.aggregation[0].aggregate}", "field": "${fields.aggregation[0].field}", "title": "${fields.aggregation[0].label}"}`
-    );
+    const [year, setYear] = useState(null);
+    const [action, setAction] = useState(null);
+    const [filter, setFilter] = useState(null);
+    const [x, setX] = useState(null);
+    const [y, setY] = useState(null);
+    const [aggregate, setAggregate] = useState(null);
     const [displayNullValues, setDisplayNullValues] = useState(true);
     const [additionalFilters, setAdditionalFilters] = useState([]);
     const [xValues, setXValues] = useState([]);
     const [yValues, setYValues] = useState([]);
 
-    useEffect(() => {
-        get(process.env.BASE_PATH + 'data/matrix-pointcalls.csv')
+    function getData (path) {
+        return new Promise((success, failure) => {
+            get(process.env.BASE_PATH + 'data/' + path)
             .then(({ data: str }) => {
                 try {
                     const csv = csvParse(str);
-                    setData(csv);
-                    setLoadingState('success');
+                    success(csv);
                 } catch (error) {
-                    console.error(error);
-                    setLoadingState('failed');
+                    failure(error);
                 }
+            })
+            .catch((error) => {
+                failure(error);
+            })
+        })
+    }
+
+    function getField (path) {
+        return new Promise((success, failure) => {
+            get(process.env.BASE_PATH + 'data/' + path)
+            .then(({ data: json }) => {
+                try {
+                    success(json);
+                } catch (error) {
+                    failure(error);
+                }
+            })
+            .catch((error) => {
+                failure(error);
+            })
+        })
+    }
+
+    useEffect(() => {
+        const { pathData, pathFields } = source;
+        console.info('load data');
+
+        Promise.all([getData(pathData), getField(pathFields)])
+            .then(([data, fields]) => {
+                setData(data);
+
+                console.log(fields);
+                setFields(fields)
+                setYear(`{ "filter": { "field": "${fields.years[0].field}", "equal": "${fields.years[0].value}" } }`)
+                setAction(`{ "filter": { "field": "${fields.actions[0].field}", "equal": "${fields.actions[0].value}" } }`)
+                setFilter(`{"filter": { "field": "${fields.filters[0].field}", "equal": "${fields.filters[0].value}" } }`)
+                setX(`{ "field": "${fields.groups[0].field}", "type": "nominal", "axis": { "orient": "top" }, "title": "${fields.groups[0].label}" }`)
+                setY(`{ "field": "${fields.groups[1].field}", "type": "nominal", "sort": "-color", "title": "${fields.groups[1].label}" }`)
+                setAggregate(`{"aggregate": "${fields.aggregation[0].aggregate}", "field": "${fields.aggregation[0].field}", "title": "${fields.aggregation[0].label}"}`)
+
+                setLoadingState('success');
             })
             .catch((error) => {
                 console.error(error);
                 setLoadingState('failed');
             })
-    }, []);
+    }, [source]);
 
     useEffect(() => {
         if (loadingState !== 'success') { return; }
@@ -139,6 +170,8 @@ export default function App({
                         ...xValues.map((value) => { return { value: value, field: 'x' } }),
                         ...yValues.map((value) => { return { value: value, field: 'y' } })
                     ]}
+                    sourceControl={[source, setSource]}
+                    fields={fields}
                 />
 
                 {
