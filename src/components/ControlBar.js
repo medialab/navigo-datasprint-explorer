@@ -120,7 +120,7 @@ export default function ControlBar({
             />
 
             <ControSelect
-                label={`Voir les ${source} avec action`}
+                label={`Voir les ${source.label} avec action`}
                 name='action'
                 value={action}
                 setter={setAction}
@@ -137,7 +137,7 @@ export default function ControlBar({
             />
 
             <ControSelect
-                label={`Voir les ${source} de`}
+                label={`Voir les ${source.label} de`}
                 name='filter'
                 value={filter}
                 setter={setFilter}
