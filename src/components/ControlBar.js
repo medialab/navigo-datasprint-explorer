@@ -196,7 +196,7 @@ export default function ControlBar({
                 <summary className='button is-info'>Filtres supplémentaires</summary>
 
                 <div className='buttons'>
-                    <button className="button is-primary" onClick={() => addInputFilter('x')}>Ajouter un filtre X</button>
+                    { setX && <button className="button is-primary" onClick={() => addInputFilter('x')}>Ajouter un filtre X</button>}
                     <button className="button is-primary" onClick={() => addInputFilter('y')}>Ajouter un filtre Y</button>
                 </div>
 

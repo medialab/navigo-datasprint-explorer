@@ -5,6 +5,7 @@ import { csvParse } from 'd3-dsv';
 import Header from './Header';
 import ControlBar from './ControlBar';
 import Matrix from './Matrix';
+import Histogram from './Histogram';
 
 import fields from '../navigo-pointcalls-fields.json'
 
@@ -143,6 +144,23 @@ export default function App({
                 {
                     viz === 'matrice' &&
                     <Matrix
+                        data={data}
+                        control={{
+                            year: year,
+                            action: action,
+                            filter: filter,
+                            x: x,
+                            y: y,
+                            aggregate: aggregate,
+                            displayNullValues: displayNullValues,
+                            additionalFilters: additionalFilters
+                        }}
+                    />
+                }
+
+                {
+                    viz === 'histogramme' &&
+                    <Histogram
                         data={data}
                         control={{
                             year: year,
