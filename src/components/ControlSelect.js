@@ -12,6 +12,8 @@ export default function ControlSelect ({
         setter(event.target.value);
     }
 
+    if (setter === false) { return null; }
+
     return (
         <div
             className='block'

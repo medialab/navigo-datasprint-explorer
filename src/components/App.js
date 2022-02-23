@@ -16,6 +16,10 @@ export default function App({
      * @param {'loading'|'failed'|'success'}
      */
     const [loadingState, setLoadingState] = useState('loading');
+    /**
+     * @param {'matrice'|'histogramme'}
+     */
+    const [viz, setViz] = useState('matrice');
 
     const [year, setYear] = useState(
         `{ "filter": { "field": "year", "equal": "${fields.years[0].value}" } }`
@@ -116,7 +120,7 @@ export default function App({
 
     return (
         <div>
-            <Header />
+            <Header vizControl={[viz, setViz]} />
 
             <main className='columns'>
                 <ControlBar
@@ -124,7 +128,7 @@ export default function App({
                         year: [year, setYear],
                         action: [action, setAction],
                         filter: [filter, setFilter],
-                        x: [x, setX],
+                        x: [x, (viz === 'matrice' ? setX : false)],
                         y: [y, setY],
                         aggregate: [aggregate, setAggregate],
                         displayNullValues: [displayNullValues, setDisplayNullValues],
@@ -136,20 +140,23 @@ export default function App({
                     ]}
                 />
 
-                <Matrix
-                    data={data}
-                    control={{
-                        year: year,
-                        action: action,
-                        filter: filter,
-                        x: x,
-                        y: y,
-                        aggregate: aggregate,
-                        displayNullValues: displayNullValues,
-                        additionalFilters: additionalFilters
-                    }}
-                />
+                {
+                    viz === 'matrice' &&
+                    <Matrix
+                        data={data}
+                        control={{
+                            year: year,
+                            action: action,
+                            filter: filter,
+                            x: x,
+                            y: y,
+                            aggregate: aggregate,
+                            displayNullValues: displayNullValues,
+                            additionalFilters: additionalFilters
+                        }}
+                    />
+                }
             </main>
         </div>
-    );
+    )
 }
