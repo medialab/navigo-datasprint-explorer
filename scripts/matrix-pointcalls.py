@@ -10,7 +10,7 @@
 import csv
 import json
 
-JSON_PATH = '../src/navigo-pointcalls-fields.json'
+JSON_PATH = '../src/json/navigo-pointcalls-fields.json'
 json_file = open(JSON_PATH, "r").read()
 json_content = json.loads(json_file)
 
