@@ -28,6 +28,6 @@
         { "field": "pointcall_action", "value": "out", "label": "en sortie (out)"},
         { "field": "pointcall_action", "value": "in-out", "label": "en correspondance (in-out)"},
         { "field": "pointcall_action", "value": "transit", "label": "en transit (transit)"},
-        { "field": "pointcall_action", "value": "in sailing", "label": "en pêche (sailing around)"}
+        { "field": "pointcall_action", "value": "sailing around", "label": "en pêche (sailing around)"}
     ]
 }
