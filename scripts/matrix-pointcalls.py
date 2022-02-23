@@ -15,6 +15,12 @@ json_file = open(JSON_PATH, "r").read()
 json_content = json.loads(json_file)
 
 fields = set()
+filters = {}
+
+for filter in json_content['filters']:
+    field = filter['field']
+    value = filter['value']
+    filters[field] = value
 
 for key in json_content:
     items = json_content[key]
@@ -40,7 +46,16 @@ for year in ['1787', '1789']:
             )
 
             # Prendre tous les filters du JSON et les passer dans un if || pour filter les données du CSV
-    
+            filter_test = []
+            for meta in filters.keys():
+                filter_value = filters[meta]
+                if row_original[meta] == filter_value:
+                    filter_test.append(True)
+                else:
+                    filter_test.append(False)
+
+            if any(filter_test) == False:
+                continue
 
             for meta in row.keys():
                 if meta == 'year':
