@@ -1,0 +1,33 @@
+{
+    "years": [
+        { "field": "year", "value": "1787", "label": "1787"},
+        { "field": "year", "value": "1789", "label": "1789"}
+    ],
+    "filters": [
+        { "field": "pointcall", "value": "Dunkerque", "label": "port de Dunkerque uniquement"},
+        { "field": "ferme_bureau", "value": "Dunkerque", "label": "ports du bureau des fermes de Dunkerque (Dunkerque et Gravelines)"},
+        { "field": "ferme_direction", "value": "Lille", "label": "ports de la direction des fermes de Lille (Dunkerque et Gravelines)"}
+    ],
+    "groups": [
+        { "field": "homeport", "label": "port d'attache (homeport)"},
+        { "field": "homeport_state_1789_fr", "label": "pays d'attache (homeport_state_1789_fr)"},
+        { "field": "flag", "label": "pays du pavillon (flag)"},
+        { "field": "tonnage_class", "label": "classe de tonnage (tonnage_class)"},
+        { "field": "pointcall", "label": "port du pointcall"},
+        { "field": "ferme_bureau", "label": "bureau de ferme du pointcall"},
+        { "field": "ferme_direction", "label": "direction de ferme du pointcall"},
+        { "field": "pointcall_province", "label": "province du pointcall"},
+        { "field": "pointcall_admiralty", "label": "amirauté du pointcall"}
+    ],
+    "aggregation": [
+        { "field": "tonnage", "label": "tonnage", "aggregate": "sum"},
+        { "field": "pointcall", "label": "nombre de pointcalls", "aggregate": "count"}
+    ],
+    "actions": [
+        { "field": "pointcall_action", "value": "in", "label": "en entrée (in)"},
+        { "field": "pointcall_action", "value": "out", "label": "en sortie (out)"},
+        { "field": "pointcall_action", "value": "in-out", "label": "en correspondance (in-out)"},
+        { "field": "pointcall_action", "value": "transit", "label": "en transit (transit)"},
+        { "field": "pointcall_action", "value": "sailing around", "label": "en pêche (sailing around)"}
+    ]
+}
