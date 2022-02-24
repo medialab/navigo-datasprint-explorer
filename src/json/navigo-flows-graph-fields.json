@@ -1,0 +1,28 @@
+{
+    "years": [
+        { "field": "year", "value": "1787", "label": "1787"},
+        { "field": "year", "value": "1789", "label": "1789"}
+    ],
+    "filters": [
+        { "field": "departure", "value": "Dunkerque", "label": "départs du port de Dunkerque"},
+        { "field": "destination", "value": "Dunkerque", "label": "arrivées au port de Dunkerque"}
+    ],
+    "groups": [
+        { "field": "homeport", "label": "port d'attache (homeport)"},
+        { "field": "homeport_state_1789_fr", "label": "pays d'attache (homeport_state_1789_fr)"},
+        { "field": "flag", "label": "pays du pavillon (flag)"},
+        { "field": "tonnage_class", "label": "classe de tonnage (tonnage_class)"}
+    ],
+    "aggregation": [
+        { "field": "tonnage", "label": "tonnage", "aggregate": "sum"},
+        { "field": "departure", "label": "nombre de flux", "aggregate": "count"}
+    ],
+    "actions": [
+        { "field": "departure_action", "value": "out", "label": "sortie de port lors du départ (departure out)"},
+        { "field": "departure_action", "value": "in-out", "label": "sortie de port pour correspondance (departure in-out)"},
+        { "field": "departure_action", "value": "transit", "label": "sortie de port pour transit (departure transit)"},
+        { "field": "departure_action", "value": "sailing around", "label": "sortie de port pour pêche (departure sailing around)"},
+        { "field": "destination_action", "value": "in", "label": "entrée au port pour arrivée (destination in)"},
+        { "field": "destination_action", "value": "transit", "label": "entrée au port pour correspondance (destination transit)"}
+    ]
+}

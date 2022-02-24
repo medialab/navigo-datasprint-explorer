@@ -8,7 +8,7 @@ echo "fetching latest navigo flows data"
 curl -o data/navigo_all_flows_1789.csv "data.portic.fr/api/rawflows/?date=1789&format=csv"
 curl -o data/navigo_all_flows_1787.csv "data.portic.fr/api/rawflows/?date=1787&format=csv"
 echo "copy JSON data, contains fields"
-cp src/json/navigo-flows-fields.json src/json/navigo-pointcalls-fields.json public/data/
+cp src/json/navigo-flows-fields.json src/json/navigo-pointcalls-fields.json src/json/navigo-flows-graph-fields.json public/data/
 echo "install NodeJS dependencies"
 npm i
 echo "process data with Python scripts"

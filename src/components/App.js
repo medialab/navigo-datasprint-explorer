@@ -20,7 +20,7 @@ export default function App({
     /**
      * @param {'matrice'|'histogramme'|'graphe'}
      */
-    const [viz, setViz] = useState('matrice');
+    const [viz, setViz] = useState('graphe');
     /**
      * @param {'pointcalls'|'flows'}
      */
@@ -78,11 +78,10 @@ export default function App({
             .then(([data, fields]) => {
                 setData(data);
 
-                console.log(fields);
                 setFields(fields)
                 setYear(`{ "filter": { "field": "${fields.years[0].field}", "equal": "${fields.years[0].value}" } }`)
                 setAction(`{ "filter": { "field": "${fields.actions[0].field}", "equal": "${fields.actions[0].value}" } }`)
-                setFilter(`{"filter": { "field": "${fields.filters[0].field}", "equal": "${fields.filters[0].value}" } }`)
+                setFilter(`{"filter": { "field": "${fields.filters[0]?.field}", "equal": "${fields.filters[0]?.value}" } }`)
                 setX(`{ "field": "${fields.groups[0].field}", "type": "nominal", "axis": { "orient": "top" }, "title": "${fields.groups[0].label}" }`)
                 setY(`{ "field": "${fields.groups[1].field}", "type": "nominal", "sort": "-color", "title": "${fields.groups[1].label}" }`)
                 setAggregate(`{"aggregate": "${fields.aggregation[0].aggregate}", "field": "${fields.aggregation[0].field}", "title": "${fields.aggregation[0].label}"}`)
@@ -145,7 +144,9 @@ export default function App({
 
     useEffect(() => {
         if (viz === 'graphe') {
-            setSource({ label: 'flows', pathData: 'matrix-flows.csv', pathFields: 'navigo-flows-fields.json' })
+            setSource({ label: 'flows', pathData: 'graph-flows.csv', pathFields: 'navigo-flows-graph-fields.json' });
+        } else {
+            setSource({ label: 'pointcalls', pathData: 'matrix-pointcalls.csv', pathFields: 'navigo-pointcalls-fields.json' });
         }
     }, [viz])
 
@@ -165,6 +166,7 @@ export default function App({
                 <ControlBar
                     control={{
                         year: [year, setYear],
+                        action: (source.label !== 'flows' ? ['{}', setAction] : [{}, false]),
                         action: [action, (source.label !== 'flows' ? setAction : false)],
                         filter: [filter, setFilter],
                         x: [x, (viz !== 'histogramme' ? setX : false)],

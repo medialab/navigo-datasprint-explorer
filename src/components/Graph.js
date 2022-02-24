@@ -46,7 +46,8 @@ export default function GraphViz({
 
     for (const row of inputData) {
         ['departure', 'destination'].forEach(direction => {
-            let nodeName = row[direction]
+            let nodeName = row[direction];
+
             if (graph.hasNode(nodeName)) {
                 graph.updateNodeAttributes(nodeName, attr => {
                     return {
@@ -60,8 +61,6 @@ export default function GraphViz({
             }
         })
     }
-
-    console.log(graph.order);
 
     graph.forEachNode((node, attrs) => {
         if (
@@ -82,24 +81,61 @@ export default function GraphViz({
         }
     })
 
-    const graphologyExport = graph.export();
-    const graphExport = {
-        nodes: graphologyExport.nodes.map(({ key, attributes }, i) => {
-            return {
-                id: key,
-                label: key,
-                ...attributes
+
+    function getDunkerqueNetwork () {
+        let index = [];
+        index.push([...graph.neighborEntries('Dunkerque')]);
+
+        for (const lastNeighbors of index[index.length - 1]) {
+            let records = [];
+
+            for (const { neighbor } of lastNeighbors) {
+                records.push(...graph.neighborEntries(neighbor))
             }
-        }),
-        edges: graphologyExport.edges.map(({ key, source, target, attributes }) => {
-            return {
-                id: key,
-                from: source,
-                to: target,
-                ...attributes
+
+            index.push(records);
+
+            if (condition) {
+                
             }
-        })
+        }
     }
+    // function getDunkerqueNetwork () {
+    //     if (graph.hasNode('Dunkerque') === false) { return []; }
+    //     const neighbors = [];
+    //     const neighborsToAnalyse = [...graph.neighborEntries('Dunkerque')]
+
+    //     for (const iterator of object) {
+            
+    //     }
+
+    //     neighborsToAnalyse.forEach(({neighbor: node}) => {
+    //         graph.neighborEntries('Dunkerque')
+    //     });
+
+    //     return neighbors;
+    // }
+    
+    console.log(getDunkerqueNetwork());
+
+    const graphologyExport = graph.export();
+    // const graphExport = {
+    //     nodes: graphologyExport.nodes.map(({ key, attributes }, i) => {
+    //         return {
+    //             id: key,
+    //             label: key,
+    //             ...attributes
+    //         }
+    //     }),
+    //     edges: graphologyExport.edges.map(({ key, source, target, attributes }) => {
+    //         return {
+    //             id: key,
+    //             from: source,
+    //             to: target,
+    //             ...attributes
+    //         }
+    //     })
+    // }
 
     return (
         <>
@@ -108,7 +144,7 @@ export default function GraphViz({
                     {JSON.stringify(graphologyExport, undefined, 4)}
                 </code>
             </pre> */}
-            <Graph
+            {/* <Graph
             graph={graphExport}
             options={{
                 height: '800px',
@@ -144,7 +180,7 @@ export default function GraphViz({
                     }
                 }
             }}
-        />
+        /> */}
         </>
     )
 }
