@@ -165,7 +165,7 @@ export default function App({
                 <ControlBar
                     control={{
                         year: [year, setYear],
-                        action: [action, setAction],
+                        action: [action, (source.label !== 'flows' ? setAction : false)],
                         filter: [filter, setFilter],
                         x: [x, (viz !== 'histogramme' ? setX : false)],
                         y: [y, setY],
