@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import {dfsFromNode} from 'graphology-traversal/dfs';
 import _Graph from 'graphology';
 import Graph from 'react-vis-network-graph';
 
@@ -81,70 +82,43 @@ export default function GraphViz({
         }
     })
 
-
-    function getDunkerqueNetwork () {
-        let index = [];
-        index.push([...graph.neighborEntries('Dunkerque')]);
-
-        for (const lastNeighbors of index[index.length - 1]) {
-            let records = [];
-
-            for (const { neighbor } of lastNeighbors) {
-                records.push(...graph.neighborEntries(neighbor))
-            }
-
-            index.push(records);
-
-            if (condition) {
-                
-            }
-        }
+    if (graph.hasNode('Dunkerque') === false) {
+        return null;
     }
-    // function getDunkerqueNetwork () {
-    //     if (graph.hasNode('Dunkerque') === false) { return []; }
-    //     const neighbors = [];
-    //     const neighborsToAnalyse = [...graph.neighborEntries('Dunkerque')]
 
-    //     for (const iterator of object) {
-            
-    //     }
-
-    //     neighborsToAnalyse.forEach(({neighbor: node}) => {
-    //         graph.neighborEntries('Dunkerque')
-    //     });
-
-    //     return neighbors;
-    // }
+    const nodesToKeep = new Set();
     
-    console.log(getDunkerqueNetwork());
+    dfsFromNode(graph, 'Dunkerque', function (node, attr, depth) {
+        nodesToKeep.add(node);
+    });
+
+    graph.forEachNode((node, attrs) => {
+        if (nodesToKeep.has(node) === false) {
+            graph.dropNode(node);
+        }
+    })
 
     const graphologyExport = graph.export();
-    // const graphExport = {
-    //     nodes: graphologyExport.nodes.map(({ key, attributes }, i) => {
-    //         return {
-    //             id: key,
-    //             label: key,
-    //             ...attributes
-    //         }
-    //     }),
-    //     edges: graphologyExport.edges.map(({ key, source, target, attributes }) => {
-    //         return {
-    //             id: key,
-    //             from: source,
-    //             to: target,
-    //             ...attributes
-    //         }
-    //     })
-    // }
+    const graphExport = {
+        nodes: graphologyExport.nodes.map(({ key, attributes }, i) => {
+            return {
+                id: key,
+                label: key,
+                ...attributes
+            }
+        }),
+        edges: graphologyExport.edges.map(({ key, source, target, attributes }) => {
+            return {
+                id: key,
+                from: source,
+                to: target,
+                ...attributes
+            }
+        })
+    }
 
     return (
-        <>
-            {/* <pre>
-                <code>
-                    {JSON.stringify(graphologyExport, undefined, 4)}
-                </code>
-            </pre> */}
-            {/* <Graph
+        <Graph
             graph={graphExport}
             options={{
                 height: '800px',
@@ -180,7 +154,6 @@ export default function GraphViz({
                     }
                 }
             }}
-        /> */}
-        </>
+        />
     )
 }
