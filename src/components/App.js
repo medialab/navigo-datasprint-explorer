@@ -6,6 +6,7 @@ import Header from './Header';
 import ControlBar from './ControlBar';
 import Matrix from './Matrix';
 import Histogram from './Histogram';
+import Graph from './Graph';
 
 export default function App({
 
@@ -17,7 +18,7 @@ export default function App({
      */
     const [loadingState, setLoadingState] = useState('loading');
     /**
-     * @param {'matrice'|'histogramme'}
+     * @param {'matrice'|'histogramme'|'graphe'}
      */
     const [viz, setViz] = useState('matrice');
     /**
@@ -142,6 +143,12 @@ export default function App({
         setYValues(Array.from(list).sort())
     }, [y, loadingState]);
 
+    useEffect(() => {
+        if (viz === 'graphe') {
+            setSource({ label: 'flows', pathData: 'matrix-flows.csv', pathFields: 'navigo-flows-fields.json' })
+        }
+    }, [viz])
+
     if (loadingState === 'loading') {
         return <div>Chargement en cours</div>
     }
@@ -160,7 +167,7 @@ export default function App({
                         year: [year, setYear],
                         action: [action, setAction],
                         filter: [filter, setFilter],
-                        x: [x, (viz === 'matrice' ? setX : false)],
+                        x: [x, (viz !== 'histogramme' ? setX : false)],
                         y: [y, setY],
                         aggregate: [aggregate, setAggregate],
                         displayNullValues: [displayNullValues, setDisplayNullValues],
@@ -170,7 +177,7 @@ export default function App({
                         ...xValues.map((value) => { return { value: value, field: 'x' } }),
                         ...yValues.map((value) => { return { value: value, field: 'y' } })
                     ]}
-                    sourceControl={[source, setSource]}
+                    sourceControl={[source, (viz === 'graphe' ? false : setSource)]}
                     fields={fields}
                 />
 
@@ -194,6 +201,23 @@ export default function App({
                 {
                     viz === 'histogramme' &&
                     <Histogram
+                        data={data}
+                        control={{
+                            year: year,
+                            action: action,
+                            filter: filter,
+                            x: x,
+                            y: y,
+                            aggregate: aggregate,
+                            displayNullValues: displayNullValues,
+                            additionalFilters: additionalFilters
+                        }}
+                    />
+                }
+
+                {
+                    viz === 'graphe' &&
+                    <Graph
                         data={data}
                         control={{
                             year: year,

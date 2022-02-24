@@ -82,25 +82,28 @@ export default function ControlBar({
             onSubmit={(e) => { e.preventDefault() }}
         >
 
-            <ControSelect
-                label="Source"
-                name='source'
-                value={source.path}
-                setter={(value) => setSource(JSON.parse(value))}
-                options={
-                    [
-                        { label: 'pointcalls', pathData: 'matrix-pointcalls.csv', pathFields: 'navigo-pointcalls-fields.json' },
-                        { label: 'flows', pathData: 'matrix-flows.csv', pathFields: 'navigo-flows-fields.json' }
-                    ].map(
-                        (item) => {
-                            return {
-                                value: JSON.stringify(item),
-                                label: item.label
+            {
+                setSource !== false &&
+                <ControSelect
+                    label="Source"
+                    name='source'
+                    value={source.path}
+                    setter={(value) => setSource(JSON.parse(value))}
+                    options={
+                        [
+                            { label: 'pointcalls', pathData: 'matrix-pointcalls.csv', pathFields: 'navigo-pointcalls-fields.json' },
+                            { label: 'flows', pathData: 'matrix-flows.csv', pathFields: 'navigo-flows-fields.json' }
+                        ].map(
+                            (item) => {
+                                return {
+                                    value: JSON.stringify(item),
+                                    label: item.label
+                                }
                             }
-                        }
-                    )
-                }
-            />
+                        )
+                    }
+                />
+            }
 
             <ControSelect
                 label="Voir l'année"

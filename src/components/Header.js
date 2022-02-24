@@ -13,7 +13,7 @@ export default function ControlBar({
                 <p className="menu-label">Visualisations</p>
                 <ul className="menu-list" style={{ display: 'flex' }}>
                     {
-                        ['matrice', 'histogramme'].map((vizName, i) => {
+                        ['matrice', 'histogramme', 'graphe'].map((vizName, i) => {
                             return (
                                 <li key={i}>
                                     <a
