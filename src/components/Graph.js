@@ -4,12 +4,12 @@ import Graph from 'react-vis-network-graph';
 
 import 'vis-network/dist/dist/vis-network.min.css';
 
-const graph = new _Graph();
-
 export default function GraphViz({
     data: inputData,
     control
 }) {
+    const graph = new _Graph();
+    
     for (const key in control) {
         if (typeof control[key] !== 'string') {
             continue;
@@ -35,57 +35,49 @@ export default function GraphViz({
 
     inputData = inputData
         .filter(row => row[control.year.filter.field] === control.year.filter.equal)
-        .filter(row => row[control.action.filter.field] === control.action.filter.equal)
-        .filter(row => row[control.filter.filter.field] === control.filter.filter.equal)
+        // .filter(row => row[control.filter.filter.field] === control.filter.filter.equal)
         .map(({ tonnage, ...rest }) => {
             return {
                 tonnage: Number(tonnage),
-                aggregation: 1,
+                occurence: 1,
                 ...rest
             }
         })
 
-    const directionField = control.filter.filter.field;
-    const direction = control.filter.filter.equal;
-    const directionOppositeField = getGraphArgument();
-    const directionOppositeList = inputData.map(row => row[directionOppositeField]);
-
-    for (let i = 0; i < inputData.length; i++) {
-        const row = inputData[i];
-        const nodeName = row[directionOppositeField];
-        if (graph.hasNode(nodeName)) {
-            graph.updateNodeAttributes(nodeName, attr => {
-                return {
-                    ...attr,
-                    tonnage: attr.tonnage + row['tonnage'],
-                    aggregation: attr.aggregation + 1
-                }
-            })
-            continue;
-        }
-        graph.addNode(nodeName, { ...row });
+    for (const row of inputData) {
+        ['departure', 'destination'].forEach(direction => {
+            let nodeName = row[direction]
+            if (graph.hasNode(nodeName)) {
+                graph.updateNodeAttributes(nodeName, attr => {
+                    return {
+                        ...attr,
+                        tonnage: attr.tonnage + row['tonnage'],
+                        occurence: attr.occurence + 1
+                    }
+                })
+            } else {
+                graph.addNode(nodeName, { ...row });
+            }
+        })
     }
 
-    graph.forEachNode((node, attr) => {
+    console.log(graph.order);
+
+    graph.forEachNode((node, attrs) => {
         if (
-            directionOppositeList.includes(attr[directionField]) ||
-            directionOppositeList.includes(attr[directionOppositeField])
+            graph.hasNode(attrs['departure']) &&
+            graph.hasNode(attrs['destination'])
         ) {
-            if (
-                graph.hasNode(attr[directionField]) &&
-                graph.hasNode(attr[directionOppositeField])
-            ) {
-                if (graph.hasEdge(attr[directionField], attr[directionOppositeField])) {
-                    graph.updateEdgeAttribute(
-                        attr[directionField], attr[directionOppositeField],
-                        'aggregation',
-                        n => n + 1
-                    )
-                } else {
-                    graph.addEdge(attr[directionField], attr[directionOppositeField], {
-                        aggregation: 1
-                    })
-                }
+            if (graph.hasEdge(attrs['departure'], attrs['destination'])) {
+                graph.updateEdgeAttribute(
+                    attrs['departure'], attrs['destination'],
+                    'occurence',
+                    n => n + 1
+                )
+            } else {
+                graph.addEdge(attrs['departure'], attrs['destination'], {
+                    occurence: 1
+                })
             }
         }
     })
@@ -110,7 +102,13 @@ export default function GraphViz({
     }
 
     return (
-        <Graph
+        <>
+            {/* <pre>
+                <code>
+                    {JSON.stringify(graphologyExport, undefined, 4)}
+                </code>
+            </pre> */}
+            <Graph
             graph={graphExport}
             options={{
                 height: '800px',
@@ -123,21 +121,30 @@ export default function GraphViz({
                     forceAtlas2Based: {
                         theta: 0.5,
                         gravitationalConstant: -50,
-                        centralGravity: 0.01,
+                        centralGravity: 10,
                         springConstant: 0.08,
                         springLength: 100,
                         damping: 0.4,
                         avoidOverlap: 0
                     },
-                    repulsion: {
-                        centralGravity: 0.2,
-                        springLength: 200,
-                        springConstant: 0.05,
-                        nodeDistance: 100,
-                        damping: 0.09
+                    hierarchicalRepulsion: {
+                        centralGravity: 0.0,
+                        springLength: 100,
+                        springConstant: 0.01,
+                        nodeDistance: 120,
+                        damping: 0.09,
+                        avoidOverlap: 0
+                    },
+                    stabilization: {
+                        enabled: true,
+                        iterations: 1000,
+                        updateInterval: 200,
+                        onlyDynamicEdges: false,
+                        fit: true
                     }
                 }
             }}
         />
+        </>
     )
 }
