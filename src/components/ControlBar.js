@@ -87,7 +87,7 @@ export default function ControlBar({
                 <ControSelect
                     label="Source"
                     name='source'
-                    value={source.path}
+                    value={JSON.stringify(source)}
                     setter={(value) => setSource(JSON.parse(value))}
                     options={
                         [
