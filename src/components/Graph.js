@@ -25,20 +25,8 @@ export default function GraphViz({
         }
     }
 
-    function getGraphArgument() {
-        let filter = control.filter.filter.field;
-        return filter.replace(/(destination|departure)/g, (str) => {
-            if (str === 'departure') {
-                return 'destination'
-            } else {
-                return 'departure'
-            }
-        })
-    }
-
     inputData = inputData
         .filter(row => row[control.year.filter.field] === control.year.filter.equal)
-        // .filter(row => row[control.filter.filter.field] === control.filter.filter.equal)
         .map(({ tonnage, occurence, ...rest }) => {
             return {
                 tonnage: Number(tonnage),
@@ -96,6 +84,8 @@ export default function GraphViz({
     
     dfsFromNode(graph, 'Dunkerque', function (node, attr, depth) {
         nodesToKeep.add(node);
+    }, {
+        mode: 'directed'
     });
 
     graph.forEachNode((node, { tonnage, occurence, ...rest }) => {
