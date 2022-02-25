@@ -19,6 +19,9 @@ fields = set()
 for key in json_content:
     items = json_content[key]
     for item in items:
+        if item['field'] == 'occurence':
+            fields.add('departure')
+            continue
         fields.add(item['field'])
 
 fields = list(fields)
