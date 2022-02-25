@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {dfsFromNode} from 'graphology-traversal/dfs';
 import _Graph from 'graphology';
 import { scaleLinear, scaleOrdinal } from 'd3-scale'
-import { schemePaired } from 'd3-scale-chromatic'
+import { schemePaired, schemeOranges } from 'd3-scale-chromatic'
 import Graph from 'react-vis-network-graph';
 
 import 'vis-network/dist/dist/vis-network.min.css';
@@ -113,7 +113,9 @@ export default function GraphViz({
         }
     })
 
-    
+    if (control.x.field === undefined) {
+        return null;
+    }
 
     let setSize;
     switch (control.aggregate.field) {
@@ -132,20 +134,48 @@ export default function GraphViz({
             break;
     }
 
-    console.log(Array.from(xValues));
+    let setColor;
+    switch (control.x.field) {
+        case 'homeport':
+            setColor = scaleOrdinal()
+                .domain(Array.from(xValues))
+                .range(schemePaired);
+            break;
 
-    const getColor = scaleOrdinal()
-        .domain(Array.from(xValues))
-        .range(schemePaired);
+        case 'homeport_state_1789_fr':
+            setColor = scaleOrdinal()
+                .domain(Array.from(xValues))
+                .range(schemePaired);
+            break;
+
+        case 'tonnage_class':
+            setColor = scaleOrdinal()
+                .domain([
+                    '[1-20]',
+                    '[21-50]',
+                    '[51-100]',
+                    '[101-200]',
+                    '[201-500]',
+                ])
+                .range([
+                    'hsl(24, 95%, 20%)',
+                    'hsl(24, 95%, 35%)',
+                    'hsl(24, 95%, 50%)',
+                    'hsl(24, 95%, 65%)',
+                    'hsl(24, 95%, 80%)'
+                ]);
+            break;
+    }
 
     const graphologyExport = graph.export();
     const graphExport = {
         nodes: graphologyExport.nodes.map(({ key, attributes }, i) => {
+            console.log(setColor(attributes[control.x.field]));
             return {
                 id: key,
                 label: key,
                 size: setSize(attributes[control.aggregate.field]),
-                color: getColor(attributes[control.x.field]),
+                color: setColor(attributes[control.x.field]),
                 ...attributes
             }
         }),
