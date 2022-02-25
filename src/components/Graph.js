@@ -38,7 +38,7 @@ export default function GraphViz({
     inputData = inputData
         .filter(row => row[control.year.filter.field] === control.year.filter.equal)
         // .filter(row => row[control.filter.filter.field] === control.filter.filter.equal)
-        .map(({ tonnage, ...rest }) => {
+        .map(({ tonnage, occurence, ...rest }) => {
             return {
                 tonnage: Number(tonnage),
                 occurence: 1,
@@ -117,13 +117,30 @@ export default function GraphViz({
         [1, 50]
     )
 
+    let setSize;
+    switch (control.aggregate.field) {
+        case 'tonnage':
+            setSize = scaleLinear(
+                [minTonnage, maxTonnage],
+                [1, 50]
+            )
+            break;
+
+        case 'occurence':
+            setSize = scaleLinear(
+                [minOccurence, maxOccurence],
+                [1, 50]
+            )
+            break;
+    }
+
     const graphologyExport = graph.export();
     const graphExport = {
         nodes: graphologyExport.nodes.map(({ key, attributes }, i) => {
             return {
                 id: key,
                 label: key,
-                size: scaleOccurence(attributes.occurence),
+                size: setSize(attributes[control.aggregate.field]),
                 ...attributes
             }
         }),
