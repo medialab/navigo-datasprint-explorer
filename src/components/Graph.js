@@ -170,7 +170,6 @@ export default function GraphViz({
     const graphologyExport = graph.export();
     const graphExport = {
         nodes: graphologyExport.nodes.map(({ key, attributes }, i) => {
-            console.log(setColor(attributes[control.x.field]));
             return {
                 id: key,
                 label: key,
@@ -190,42 +189,57 @@ export default function GraphViz({
     }
 
     return (
-        <Graph
-            graph={graphExport}
-            options={{
-                height: '800px',
-                nodes: {
-                    size: 5,
-                    shape: 'dot'
-                },
-                physics: {
-                    enabled: true,
-                    forceAtlas2Based: {
-                        theta: 0.5,
-                        gravitationalConstant: -50,
-                        centralGravity: 10,
-                        springConstant: 0.08,
-                        springLength: 100,
-                        damping: 0.4,
-                        avoidOverlap: 0
-                    },
-                    hierarchicalRepulsion: {
-                        centralGravity: 0.0,
-                        springLength: 100,
-                        springConstant: 0.01,
-                        nodeDistance: 120,
-                        damping: 0.09,
-                        avoidOverlap: 0
-                    },
-                    stabilization: {
-                        enabled: true,
-                        iterations: 1000,
-                        updateInterval: 200,
-                        onlyDynamicEdges: false,
-                        fit: true
-                    }
+        <>
+            <ul>
+                {
+                    Array.from(xValues).map((color, i) => {
+                        return <li
+                            style={{
+                                color: setColor(color),
+                                fontWeight: 'bold'
+                            }}
+                            key={i}
+                        >{color}</li>
+                    })
                 }
-            }}
-        />
+            </ul>
+            <Graph
+                graph={graphExport}
+                options={{
+                    height: '800px',
+                    nodes: {
+                        size: 5,
+                        shape: 'dot'
+                    },
+                    physics: {
+                        enabled: true,
+                        forceAtlas2Based: {
+                            theta: 0.5,
+                            gravitationalConstant: -50,
+                            centralGravity: 10,
+                            springConstant: 0.08,
+                            springLength: 100,
+                            damping: 0.4,
+                            avoidOverlap: 0
+                        },
+                        hierarchicalRepulsion: {
+                            centralGravity: 0.0,
+                            springLength: 100,
+                            springConstant: 0.01,
+                            nodeDistance: 120,
+                            damping: 0.09,
+                            avoidOverlap: 0
+                        },
+                        stabilization: {
+                            enabled: true,
+                            iterations: 1000,
+                            updateInterval: 200,
+                            onlyDynamicEdges: false,
+                            fit: true
+                        }
+                    }
+                }}
+            />
+        </>
     )
 }
