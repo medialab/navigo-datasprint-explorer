@@ -17,6 +17,7 @@
     "bulma": "^0.9.3",
     "csv-loader": "^3.0.3",
     "d3-dsv": "^3.0.1",
+    "d3-scale": "^4.0.2",
     "graphology": "^0.24.1",
     "graphology-traversal": "^0.3.0",
     "prop-types": "^15.8.1",

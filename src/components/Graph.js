@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import {dfsFromNode} from 'graphology-traversal/dfs';
 import _Graph from 'graphology';
+import { scaleLinear } from 'd3-scale'
 import Graph from 'react-vis-network-graph';
 
 import 'vis-network/dist/dist/vis-network.min.css';
@@ -87,16 +88,34 @@ export default function GraphViz({
     }
 
     const nodesToKeep = new Set();
+    let minTonnage = Infinity, maxTonnage = 0;
+    let minOccurence = Infinity, maxOccurence = 0;
     
     dfsFromNode(graph, 'Dunkerque', function (node, attr, depth) {
         nodesToKeep.add(node);
     });
 
-    graph.forEachNode((node, attrs) => {
+    graph.forEachNode((node, { tonnage, occurence }) => {
         if (nodesToKeep.has(node) === false) {
             graph.dropNode(node);
+
+            if (tonnage < minTonnage) { minTonnage = tonnage; }
+            if (tonnage > maxTonnage) { maxTonnage = tonnage; }
+    
+            if (occurence < minOccurence) { minOccurence = occurence; }
+            if (occurence > maxOccurence) { maxOccurence = occurence; }
         }
     })
+
+    const scaleTonnage = scaleLinear(
+        [minTonnage, maxTonnage],
+        [1, 50]
+    )
+
+    const scaleOccurence = scaleLinear(
+        [minOccurence, maxOccurence],
+        [1, 50]
+    )
 
     const graphologyExport = graph.export();
     const graphExport = {
@@ -104,6 +123,7 @@ export default function GraphViz({
             return {
                 id: key,
                 label: key,
+                size: scaleOccurence(attributes.occurence),
                 ...attributes
             }
         }),
