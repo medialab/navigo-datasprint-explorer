@@ -20,7 +20,7 @@ export default function App({
     /**
      * @param {'matrice'|'histogramme'|'graphe'}
      */
-    const [viz, setViz] = useState('graphe');
+    const [viz, setViz] = useState('matrice');
     /**
      * @param {'pointcalls'|'flows'}
      */
