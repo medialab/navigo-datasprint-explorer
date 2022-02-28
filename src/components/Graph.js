@@ -92,7 +92,7 @@ export default function GraphViz({
             graph.dropNode(node);
 
         } else {
-            xValues.add(rest[control.x.field])
+            xValues.add(rest[control.y.field])
 
             if (tonnage < minTonnage) { minTonnage = tonnage; }
             if (tonnage > maxTonnage) { maxTonnage = tonnage; }
@@ -102,7 +102,7 @@ export default function GraphViz({
         }
     })
 
-    if (control.x.field === undefined || control.aggregate.field === undefined) {
+    if (control.y.field === undefined || control.aggregate.field === undefined) {
         return null;
     }
 
@@ -124,7 +124,7 @@ export default function GraphViz({
     }
 
     let setColor;
-    switch (control.x.field) {
+    switch (control.y.field) {
         case 'homeport':
             setColor = scaleOrdinal()
                 .domain(Array.from(xValues))
@@ -163,7 +163,7 @@ export default function GraphViz({
                 id: key,
                 label: key,
                 size: setSize(attributes[control.aggregate.field]),
-                color: setColor(attributes[control.x.field]),
+                color: setColor(attributes[control.y.field]),
                 ...attributes
             }
         }),

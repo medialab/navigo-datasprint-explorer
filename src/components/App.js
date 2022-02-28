@@ -82,8 +82,8 @@ export default function App({
                 setYear(`{ "filter": { "field": "${fields.years[0].field}", "equal": "${fields.years[0].value}" } }`)
                 setAction(`{ "filter": { "field": "${fields.actions[0].field}", "equal": "${fields.actions[0].value}" } }`)
                 setFilter(`{"filter": { "field": "${fields.filters[0]?.field}", "equal": "${fields.filters[0]?.value}" } }`)
-                setX(`{ "field": "${fields.groups[0].field}", "type": "nominal", "axis": { "orient": "top" }, "title": "${fields.groups[0].label}" }`)
-                setY(`{ "field": "${fields.groups[1].field}", "type": "nominal", "sort": "-color", "title": "${fields.groups[1].label}" }`)
+                setX(`{ "field": "${fields.groups[1].field}", "type": "nominal", "axis": { "orient": "top" }, "title": "${fields.groups[1].label}" }`)
+                setY(`{ "field": "${fields.groups[0].field}", "type": "nominal", "sort": "-color", "title": "${fields.groups[0].label}" }`)
                 setAggregate(`{"aggregate": "${fields.aggregation[0].aggregate}", "field": "${fields.aggregation[0].field}", "title": "${fields.aggregation[0].label}"}`)
 
                 setLoadingState('success');
@@ -166,10 +166,9 @@ export default function App({
                 <ControlBar
                     control={{
                         year: [year, setYear],
-                        action: (source.label !== 'flows' ? ['{}', setAction] : [{}, false]),
                         action: [action, (source.label !== 'flows' ? setAction : false)],
-                        filter: [filter, setFilter],
-                        x: [x, (viz !== 'histogramme' ? setX : false)],
+                        filter: [filter, (viz === 'graphe' ? false : setFilter)],
+                        x: [x, (viz === 'matrice' ? setX : false)],
                         y: [y, setY],
                         aggregate: [aggregate, setAggregate],
                         displayNullValues: [displayNullValues, setDisplayNullValues],
@@ -181,6 +180,7 @@ export default function App({
                     ]}
                     sourceControl={[source, (viz === 'graphe' ? false : setSource)]}
                     fields={fields}
+                    viz={viz}
                 />
 
                 {
