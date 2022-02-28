@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {dfsFromNode} from 'graphology-traversal/dfs';
 import _Graph from 'graphology';
 import { scaleLinear, scaleOrdinal } from 'd3-scale'
-import { schemePaired, schemeOranges } from 'd3-scale-chromatic'
+import { schemePaired } from 'd3-scale-chromatic'
 import Graph from 'react-vis-network-graph';
 
 import 'vis-network/dist/dist/vis-network.min.css';
@@ -80,7 +80,6 @@ export default function GraphViz({
     const xValues = new Set();
     let minTonnage = Infinity, maxTonnage = 0;
     let minOccurence = Infinity, maxOccurence = 0;
-    // colorsForX = {};
     
     dfsFromNode(graph, 'Dunkerque', function (node, attr, depth) {
         nodesToKeep.add(node);
@@ -103,7 +102,7 @@ export default function GraphViz({
         }
     })
 
-    if (control.x.field === undefined) {
+    if (control.x.field === undefined || control.aggregate.field === undefined) {
         return null;
     }
 
