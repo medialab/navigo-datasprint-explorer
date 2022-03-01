@@ -94,24 +94,22 @@ export default function GraphViz({
         mode: 'directed'
     });
 
-    graph.forEachNode((node, { tonnage, occurence, tonnage_class, ...rest }) => {
+    graph.forEachNode((node, { tonnage, occurence, ...rest }) => {
         if (nodesToKeep.has(node) === false) {
             graph.dropNode(node);
 
         } else {
-            xValues.add(rest[control.y.field])
-
-            const tonnageClassSorted = Object.keys(tonnage_class).sort((a,b) => tonnage_class[b] - tonnage_class[a]);
-            const tonnageClass = tonnageClassSorted[0];
-
-            // graph.updateNodeAttribute(node, 'tonnage_class', n => n.tonnage_class = tonnageClass)
+            const tonnageClassSorted = Object.keys(rest['tonnage_class']).sort((a,b) => rest['tonnage_class'][b] - rest['tonnage_class'][a]);
+            rest['tonnage_class'] = tonnageClassSorted[0];
 
             graph.updateNodeAttributes(node, attrs => {
                 return {
                     ...attrs,
-                    tonnage_class: tonnageClass
+                    tonnage_class: rest['tonnage_class']
                 }
             })
+
+            xValues.add(rest[control.y.field])
 
             if (tonnage < minTonnage) { minTonnage = tonnage; }
             if (tonnage > maxTonnage) { maxTonnage = tonnage; }
@@ -150,7 +148,13 @@ export default function GraphViz({
                 .range(schemePaired);
             break;
 
-        case 'homeport_state_1789_fr':
+        case 'departure_state_1789_fr':
+            setColor = scaleOrdinal()
+                .domain(Array.from(xValues))
+                .range(schemePaired);
+            break;
+
+        case 'destination_state_1789_fr':
             setColor = scaleOrdinal()
                 .domain(Array.from(xValues))
                 .range(schemePaired);
@@ -167,11 +171,11 @@ export default function GraphViz({
                     // ''
                 ])
                 .range([
-                    'hsl(24, 95%, 20%)',
-                    'hsl(24, 95%, 35%)',
-                    'hsl(24, 95%, 50%)',
-                    'hsl(24, 95%, 65%)',
                     'hsl(24, 95%, 80%)',
+                    'hsl(24, 95%, 65%)',
+                    'hsl(24, 95%, 50%)',
+                    'hsl(24, 95%, 35%)',
+                    'hsl(24, 95%, 20%)',
                     // 'hsl(24, 95%, 100%)'
                 ]);
             break;
@@ -180,8 +184,6 @@ export default function GraphViz({
     const graphologyExport = graph.export();
     const graphExport = {
         nodes: graphologyExport.nodes.map(({ key, attributes }, i) => {
-
-            // console.log(attrs, control.aggregate.field);
             return {
                 id: key,
                 label: key,
