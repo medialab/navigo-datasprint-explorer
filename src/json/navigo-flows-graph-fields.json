@@ -8,8 +8,9 @@
         { "field": "destination", "value": "Dunkerque", "label": "arrivées au port de Dunkerque"}
     ],
     "groups": [
-        { "field": "homeport_state_1789_fr", "label": "pays d'attache (homeport_state_1789_fr)"},
-        { "field": "tonnage_class", "label": "classe de tonnage (tonnage_class)"}
+        { "field": "destination_state_1789_fr", "label": "pays de destination (destination_state_1789_fr)"},
+        { "field": "departure_state_1789_fr", "label": "pays de départ (departure_state_1789_fr)"},
+        { "field": "tonnage_class", "label": "classe de tonnage moyenne (tonnage_class)"}
     ],
     "aggregation": [
         { "field": "tonnage", "label": "tonnage", "aggregate": "sum"},
