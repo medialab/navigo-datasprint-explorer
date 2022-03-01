@@ -5,8 +5,6 @@ import { scaleLinear, scaleOrdinal } from 'd3-scale'
 import { schemePaired } from 'd3-scale-chromatic'
 import Graph from 'react-vis-network-graph';
 
-import 'vis-network/dist/dist/vis-network.min.css';
-
 export default function GraphViz({
     data: inputData,
     control
@@ -27,9 +25,12 @@ export default function GraphViz({
 
     inputData = inputData
         .filter(row => row[control.year.filter.field] === control.year.filter.equal)
-        .map(({ tonnage, occurence, ...rest }) => {
+        .map(({ tonnage, occurence, tonnage_class, ...rest }) => {
             return {
                 tonnage: Number(tonnage),
+                tonnage_class: {
+                    [tonnage_class]: 1
+                },
                 occurence: 1,
                 ...rest
             }
@@ -41,9 +42,15 @@ export default function GraphViz({
 
             if (graph.hasNode(nodeName)) {
                 graph.updateNodeAttributes(nodeName, attr => {
+                    const tonnageClass = Object.keys(row.tonnage_class)[0];
+                    // console.log(attr.tonnage_class[tonnageClass]);
                     return {
                         ...attr,
                         tonnage: attr.tonnage + row['tonnage'],
+                        tonnage_class: {
+                            ...attr.tonnage_class,
+                            [tonnageClass]: (attr.tonnage_class[tonnageClass] === undefined ? 0 : attr.tonnage_class[tonnageClass] + 1)
+                        },
                         occurence: attr.occurence + 1
                     }
                 })
@@ -87,12 +94,24 @@ export default function GraphViz({
         mode: 'directed'
     });
 
-    graph.forEachNode((node, { tonnage, occurence, ...rest }) => {
+    graph.forEachNode((node, { tonnage, occurence, tonnage_class, ...rest }) => {
         if (nodesToKeep.has(node) === false) {
             graph.dropNode(node);
 
         } else {
             xValues.add(rest[control.y.field])
+
+            const tonnageClassSorted = Object.keys(tonnage_class).sort((a,b) => tonnage_class[b] - tonnage_class[a]);
+            const tonnageClass = tonnageClassSorted[0];
+
+            // graph.updateNodeAttribute(node, 'tonnage_class', n => n.tonnage_class = tonnageClass)
+
+            graph.updateNodeAttributes(node, attrs => {
+                return {
+                    ...attrs,
+                    tonnage_class: tonnageClass
+                }
+            })
 
             if (tonnage < minTonnage) { minTonnage = tonnage; }
             if (tonnage > maxTonnage) { maxTonnage = tonnage; }
@@ -145,13 +164,15 @@ export default function GraphViz({
                     '[51-100]',
                     '[101-200]',
                     '[201-500]',
+                    // ''
                 ])
                 .range([
                     'hsl(24, 95%, 20%)',
                     'hsl(24, 95%, 35%)',
                     'hsl(24, 95%, 50%)',
                     'hsl(24, 95%, 65%)',
-                    'hsl(24, 95%, 80%)'
+                    'hsl(24, 95%, 80%)',
+                    // 'hsl(24, 95%, 100%)'
                 ]);
             break;
     }
@@ -159,6 +180,8 @@ export default function GraphViz({
     const graphologyExport = graph.export();
     const graphExport = {
         nodes: graphologyExport.nodes.map(({ key, attributes }, i) => {
+
+            // console.log(attrs, control.aggregate.field);
             return {
                 id: key,
                 label: key,
