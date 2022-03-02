@@ -5,7 +5,8 @@ export default function ControlBar({
     control,
     filterValues,
     sourceControl,
-    fields
+    fields,
+    viz
 }) {
     const [year, setYear] = control.year;
     const [action, setAction] = control.action;
@@ -207,55 +208,59 @@ export default function ControlBar({
                 }
             />
 
-            <label className="checkbox">
-                <input
-                    type="checkbox"
-                    checked={displayNullValues}
-                    onChange={(e) => { setDisplayNullValues(!displayNullValues) }}
-                />
+            { 
+                viz !== 'graphe' &&
+                <>
+                    <label className="checkbox">
+                        <input
+                            type="checkbox"
+                            checked={displayNullValues}
+                            onChange={(e) => { setDisplayNullValues(!displayNullValues) }}
+                        />
 
-                Afficher les valeurs <em>nulles</em>
-            </label>
+                        Afficher les valeurs <em>nulles</em>
+                    </label>
 
-            <details className='block'>
-                <summary className='button is-info'>Filtres supplémentaires</summary>
+                    <details className='block'>
+                        <summary className='button is-info'>Filtres supplémentaires</summary>
 
-                <div className='buttons'>
-                    { setX && <button className="button is-primary" onClick={() => addInputFilter('x')}>Ajouter un filtre X</button>}
-                    <button className="button is-primary" onClick={() => addInputFilter('y')}>Ajouter un filtre Y</button>
-                </div>
-
-                {
-                    additionalFilters.map(({ value, field }, i) =>
-                        <div style={{ display: 'flex' }} key={i}>
-                            <ControSelect
-                                label={`Exclure de ${field}`}
-                                name={`filter-${i}`}
-                                value={value}
-                                setter={(value) => onChangeInputFilter(value, i, field)}
-                                options={
-                                    filterValues
-                                        .filter(filter => filter.field === field)
-                                        .map(
-                                            ({value}) => {
-                                                return {
-                                                    value: value,
-                                                    label: value
-                                                }
-                                            }
-                                        )
-                                }
-                            />
-
-                            <button
-                                className="delete"
-                                onClick={() => removeInputFilter(i)}
-                            ></button>
+                        <div className='buttons'>
+                            { setX && <button className="button is-primary" onClick={() => addInputFilter('x')}>Ajouter un filtre X</button>}
+                            <button className="button is-primary" onClick={() => addInputFilter('y')}>Ajouter un filtre Y</button>
                         </div>
-                    )
-                }
-            </details>
 
+                        {
+                            additionalFilters.map(({ value, field }, i) =>
+                                <div style={{ display: 'flex' }} key={i}>
+                                    <ControSelect
+                                        label={`Exclure de ${field}`}
+                                        name={`filter-${i}`}
+                                        value={value}
+                                        setter={(value) => onChangeInputFilter(value, i, field)}
+                                        options={
+                                            filterValues
+                                                .filter(filter => filter.field === field)
+                                                .map(
+                                                    ({value}) => {
+                                                        return {
+                                                            value: value,
+                                                            label: value
+                                                        }
+                                                    }
+                                                )
+                                        }
+                                    />
+
+                                    <button
+                                        className="delete"
+                                        onClick={() => removeInputFilter(i)}
+                                    ></button>
+                                </div>
+                            )
+                        }
+                    </details>
+                </>
+            }
         </form>
     );
 }
