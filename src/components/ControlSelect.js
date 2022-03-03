@@ -1,5 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react';
-import { VizContext } from './App'
+import React from 'react';
 
 export default function ControlSelect ({
     label,

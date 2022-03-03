@@ -1,77 +1,34 @@
 import React, { useState, useEffect } from 'react';
-import ControSelect from './ControlSelect';
+import ControlSelect from './ControlSelect';
+import ControlAdditionalFilters from './ControlAdditionalFilters';
 
-export default function ControlBar({
-    control,
-    filterValues,
-    sourceControl,
+export default function ControlBar ({
     fields,
-    viz
+    data,
+    type,
+
+    xValues,
+    yValues,
+
+    sourceFilesState,
+    yearState,
+    actionState,
+    filtersState,
+    xState,
+    yState,
+    aggregateState,
+    displayNullValuesState,
+    additionalFiltersXState,
+    additionalFiltersYState
 }) {
-    const [year, setYear] = control.year;
-    const [action, setAction] = control.action;
-    const [filter, setFilter] = control.filter;
-    const [x, setX] = control.x;
-    const [y, setY] = control.y;
-    const [aggregate, setAggregate] = control.aggregate;
-    const [displayNullValues, setDisplayNullValues] = control.displayNullValues;
-    const [additionalFilters, setAdditionalFilters] = control.additionalFilters;
-    const [source, setSource] = sourceControl;
-
-    function addInputFilter (field) {
-        switch (field) {
-            case 'x':
-                setAdditionalFilters([
-                    ...additionalFilters,
-                    { value: '', action: 'exclude', field: field }
-                ])
-                break;
-
-            case 'y':
-                setAdditionalFilters([
-                    ...additionalFilters,
-                    { value: '', action: 'exclude', field: field }
-                ]);
-                break;
-        }
-    }
-
-    function removeInputFilter (inputKey) {
-        setAdditionalFilters(
-            additionalFilters.filter((filter, i) => i !== inputKey)
-        )
-    }
-
-    function onChangeInputFilter (value, inputKey, field) {
-        switch (field) {
-            case 'x':
-                setAdditionalFilters(
-                    additionalFilters.map((filter, i) => {
-                        if (i === inputKey) {
-                            filter.value = value;
-                            filter.field = field;
-                            return filter;
-                        }
-                        return filter;
-                    })
-                );
-                break;
-
-            case 'y':
-                setAdditionalFilters(
-                    additionalFilters.map((filter, i) => {
-                        if (i === inputKey) {
-                            filter.value = value;
-                            filter.field = field;
-                            return filter;
-                        }
-                        return filter;
-                    })
-                );
-                break;
-        }
-
-    }
+    const [year, setYear] = yearState;
+    const [action, setAction] = actionState;
+    const [filters, setFilters] = filtersState;
+    const [x, setX] = xState;
+    const [y, setY] = yState;
+    const [aggregate, setAggregate] = aggregateState;
+    const [displayNullValues, setDisplayNullValues] = displayNullValuesState;
+    const [sourceFiles, setSourceFiles] = sourceFilesState;
 
     return (
         <form
@@ -82,19 +39,36 @@ export default function ControlBar({
             }}
             onSubmit={(e) => { e.preventDefault() }}
         >
-
             {
-                setSource !== false &&
-                <ControSelect
-                    label="Source"
-                    name='source'
-                    value={JSON.stringify(source)}
-                    setter={(value) => setSource(JSON.parse(value))}
+                type !== 'graphe' &&
+                <ControlSelect
+                    label="Voir la source"
+                    value={JSON.stringify(sourceFiles)}
+                    setter={(input) => setYear(JSON.parse(input))}
                     options={
                         [
-                            { label: 'pointcalls', pathData: 'matrix-pointcalls.csv', pathFields: 'navigo-pointcalls-fields.json' },
-                            { label: 'flows', pathData: 'matrix-flows.csv', pathFields: 'navigo-flows-fields.json' }
+                            { data: 'pointcalls.csv', fields: 'navigo-pointcalls-fields.json' },
+                            { data: 'flows.csv', fields: 'navigo-flows-fields.json' }
                         ].map(
+                            (item) => {
+                                return {
+                                    value: JSON.stringify(item),
+                                    label: item.data
+                                }
+                            }
+                        )
+                    }
+                />
+            }
+
+            {
+                year &&
+                <ControlSelect
+                    label="Voir l'année"
+                    value={JSON.stringify(year)}
+                    setter={(input) => setYear(JSON.parse(input))}
+                    options={
+                        fields.years.map(
                             (item) => {
                                 return {
                                     value: JSON.stringify(item),
@@ -106,161 +80,119 @@ export default function ControlBar({
                 />
             }
 
-            <ControSelect
-                label="Voir l'année"
-                name='year'
-                value={year}
-                setter={setYear}
-                options={
-                    fields.years.map(
-                        (item) => {
-                            return {
-                                value: `{ "filter": { "field": "${item.field}", "equal": "${item.value}" } }`,
-                                label: item.label
+            {
+                action &&
+                <ControlSelect
+                    label="Voir avec action"
+                    value={JSON.stringify(action)}
+                    setter={(input) => setAction(JSON.parse(input))}
+                    options={
+                        fields.actions.map(
+                            (item) => {
+                                return {
+                                    value: JSON.stringify(item),
+                                    label: item.label
+                                }
                             }
-                        }
-                    )
-                }
-            />
-
-            <ControSelect
-                label={`Voir les ${source.label} avec action`}
-                name='action'
-                value={action}
-                setter={setAction}
-                options={
-                    fields.actions.map(
-                        (item) => {
-                            return {
-                                value: `{ "filter": { "field": "${item.field}", "equal": "${item.value}" } }`,
-                                label: item.label
-                            }
-                        }
-                    )
-                }
-            />
-
-            <ControSelect
-                label={`Voir les ${source.label} de`}
-                name='filter'
-                value={filter}
-                setter={setFilter}
-                options={
-                    fields.filters.map(
-                        (item) => {
-                            return {
-                                value: `{"filter": { "field": "${item.field}", "equal": "${item.value}" } }`,
-                                label: item.label
-                            }
-                        }
-                    )
-                }
-            />
-
-            <ControSelect
-                label='Axe X'
-                name='x'
-                value={x}
-                setter={setX}
-                options={
-                    fields.groups.map(
-                        (item) => {
-                            return {
-                                value: `{ "field": "${item.field}", "type": "nominal", "axis": { "orient": "top" }, "title": "${item.label}" }`,
-                                label: item.label
-                            }
-                        }
-                    )
-                }
-            />
-
-            <ControSelect
-                label='Axe Y'
-                name='y'
-                value={y}
-                setter={setY}
-                options={
-                    fields.groups.map(
-                        (item) => {
-                            return {
-                                value: `{ "field": "${item.field}", "type": "nominal", "sort": "-color", "title": "${item.label}" }`,
-                                label: item.label
-                            }
-                        }
-                    )
-                }
-            />
-
-            <ControSelect
-                label='Agrégation par'
-                name='aggregate'
-                value={aggregate}
-                setter={setAggregate}
-                options={
-                    fields.aggregation.map(
-                        (item) => {
-                            return {
-                                value: `{"aggregate": "${item.aggregate}", "field": "${item.field}"}`,
-                                label: item.label
-                            }
-                        }
-                    )
-                }
-            />
-
-            { 
-                viz !== 'graphe' &&
-                <>
-                    <label className="checkbox">
-                        <input
-                            type="checkbox"
-                            checked={displayNullValues}
-                            onChange={(e) => { setDisplayNullValues(!displayNullValues) }}
-                        />
-
-                        Afficher les valeurs <em>nulles</em>
-                    </label>
-
-                    <details className='block'>
-                        <summary className='button is-info'>Filtres supplémentaires</summary>
-
-                        <div className='buttons'>
-                            { setX && <button className="button is-primary" onClick={() => addInputFilter('x')}>Ajouter un filtre X</button>}
-                            <button className="button is-primary" onClick={() => addInputFilter('y')}>Ajouter un filtre Y</button>
-                        </div>
-
-                        {
-                            additionalFilters.map(({ value, field }, i) =>
-                                <div style={{ display: 'flex' }} key={i}>
-                                    <ControSelect
-                                        label={`Exclure de ${field}`}
-                                        name={`filter-${i}`}
-                                        value={value}
-                                        setter={(value) => onChangeInputFilter(value, i, field)}
-                                        options={
-                                            filterValues
-                                                .filter(filter => filter.field === field)
-                                                .map(
-                                                    ({value}) => {
-                                                        return {
-                                                            value: value,
-                                                            label: value
-                                                        }
-                                                    }
-                                                )
-                                        }
-                                    />
-
-                                    <button
-                                        className="delete"
-                                        onClick={() => removeInputFilter(i)}
-                                    ></button>
-                                </div>
-                            )
-                        }
-                    </details>
-                </>
+                        )
+                    }
+                />
             }
+
+            {
+                filters &&
+                <ControlSelect
+                    label="Voir"
+                    value={JSON.stringify(filters)}
+                    setter={(input) => setFilters(JSON.parse(input))}
+                    options={
+                        fields.filters.map(
+                            (item) => {
+                                return {
+                                    value: JSON.stringify(item),
+                                    label: item.label
+                                }
+                            }
+                        )
+                    }
+                />
+            }
+
+            {
+                x &&
+                <ControlSelect
+                    label="Axe X"
+                    value={JSON.stringify(x)}
+                    setter={(input) => setX(JSON.parse(input))}
+                    options={
+                        fields.groups.map(
+                            (item) => {
+                                return {
+                                    value: JSON.stringify(item),
+                                    label: item.label
+                                }
+                            }
+                        )
+                    }
+                />
+            }
+
+            {
+                y &&
+                <ControlSelect
+                    label="Axe Y"
+                    value={JSON.stringify(y)}
+                    setter={(input) => setY(JSON.parse(input))}
+                    options={
+                        fields.groups.map(
+                            (item) => {
+                                return {
+                                    value: JSON.stringify(item),
+                                    label: item.label
+                                }
+                            }
+                        )
+                    }
+                />
+            }
+
+            {
+                aggregate &&
+                <ControlSelect
+                    label="Aggrégé par"
+                    value={JSON.stringify(aggregate)}
+                    setter={(input) => setAggregate(JSON.parse(input))}
+                    options={
+                        fields.aggregation.map(
+                            (item) => {
+                                return {
+                                    value: JSON.stringify(item),
+                                    label: item.label
+                                }
+                            }
+                        )
+                    }
+                />
+            }
+
+            <label className="checkbox">
+                <input
+                    type="checkbox"
+                    checked={displayNullValues}
+                    onChange={(e) => { setDisplayNullValues(!displayNullValues) }}
+                />
+
+                Afficher les valeurs <em>nulles</em>
+            </label>
+
+            <ControlAdditionalFilters
+                xValues={xValues}
+                yValues={yValues}
+                x={x}
+                y={y}
+                additionalFiltersXState={additionalFiltersXState}
+                additionalFiltersYState={additionalFiltersYState}
+            />
         </form>
     );
 }

@@ -3,51 +3,52 @@ import slug from 'slug';
 import { VegaLite } from 'react-vega';
 
 export default function Histogram({
-    control,
-    data: inputData
+    data: inputData,
+
+    year,
+    action,
+    filters,
+    x,
+    y,
+    aggregate,
+    additionalFiltersX,
+    additionalFiltersY,
+    displayNullValues
 }) {
-    for (const key in control) {
-        if (typeof control[key] !== 'string') {
-            continue;
-        }
-
-        try {
-            control[key] = JSON.parse(control[key]);
-        } catch (error) {
-
-        }
-    }
-
-    control.y.sort = '-x';
+    // y.sort = '-x';
 
     let spec = {
         'padding': { 'top': 10, 'left': 50, 'bottom': 50, right: 10 },
-        "title": `${control.y.title} en ${control.year.filter.equal} filtré par action ${control.action.filter.equal} et pour l'ensemble ${control.filter.filter.field}`,
+        "title": [
+            `${y.label} en ${year.label}`,
+            `filtré par action ${action.label} et pour l'ensemble ${filters.label}`,
+            ...(additionalFiltersX.length === 0 ? [] : [`sont exlues en X les valeurs ${additionalFiltersX.map(filter => filter.value).join(', ')}`]),
+            ...(additionalFiltersY.length === 0 ? [] : [`sont exlues en Y les valeurs ${additionalFiltersY.map(filter => filter.value).join(', ')}`]),
+            ...(displayNullValues === false ? [`sont exlues les valeurs nulles`] : [])
+        ],
         "data": { "name": "table" },
         "mark": "bar",
         "encoding": {
-            "y": control.y,
-            "x": control.aggregate
+            "y": { "field": y.field, "type": "nominal", "sort": "-x", "title": y.label },
+            "x": { "aggregate": aggregate.aggregate, "field": aggregate.field, "title": aggregate.label }
         },
         'transform': [
-            control.filter,
-            control.year,
-            control.action,
-            ...(control.displayNullValues === false ? [
-                { "filter": `datum.${control.x.field} != ''` },
-                { "filter": `datum.${control.y.field} != ''` }
+            {"filter": { "field": filters.field, "equal": filters.value } },
+            {"filter": { "field": year.field, "equal": year.value } },
+            {"filter": { "field": action.field, "equal": action.value } },
+            ...(displayNullValues === false ? [
+                { "filter": `datum.${x.field} != ''` },
+                { "filter": `datum.${y.field} != ''` }
             ] : []),
-            ...control.additionalFilters
-                .filter(filter => filter.action === 'exclude' && filter.field === 'x')
+            ...additionalFiltersX
                 .map((filter) => {
-                    return { "filter": `datum.${control.x.field} != "${filter.value}"` }
+                    return { "filter": `datum.${x.field} != "${filter.value}"` }
                 }),
-            ...control.additionalFilters
-                .filter(filter => filter.action === 'exclude' && filter.field === 'y')
+            ...additionalFiltersY
                 .map((filter) => {
-                    return { "filter": `datum.${control.y.field} != "${filter.value}"` }
-                })
-        ]
+                    return { "filter": `datum.${y.field} != "${filter.value}"` }
+                }),
+        ],
     }
 
     let data = {
@@ -72,7 +73,7 @@ export default function Histogram({
                 spec={spec}
                 data={data}
                 renderer="svg"
-                downloadFileName={slug(spec.title)}
+                downloadFileName={slug(spec.title.join(' '))}
             />
         </div>
     );

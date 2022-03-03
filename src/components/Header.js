@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-export default function ControlBar({
-    vizControl
+export default function Header ({
+    vizState
 }) {
-    const [viz, setViz] = vizControl;
+    const [viz, setViz] = vizState;
+
     return (
         <header style={{ marginBottom: 50 }}>
             <h1 className='title is-5'>Exploration des données Navigo pour le datasprint 2022</h1>
@@ -17,8 +18,8 @@ export default function ControlBar({
                             return (
                                 <li key={i}>
                                     <a
-                                    className={(viz === vizName) ? 'is-active' : null}
-                                    onClick={() => setViz(vizName)}
+                                        className={(viz === vizName) ? 'is-active' : null}
+                                        onClick={() => setViz(vizName)}
                                     >
                                     {vizName}
                                     </a>

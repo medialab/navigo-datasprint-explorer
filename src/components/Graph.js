@@ -7,24 +7,21 @@ import Graph from 'react-vis-network-graph';
 
 export default function GraphViz({
     data: inputData,
-    control
+
+    year,
+    action,
+    filters,
+    x,
+    y,
+    aggregate,
+    additionalFiltersX,
+    additionalFiltersY,
+    displayNullValues
 }) {
     const graph = new _Graph();
-    
-    for (const key in control) {
-        if (typeof control[key] !== 'string') {
-            continue;
-        }
-
-        try {
-            control[key] = JSON.parse(control[key]);
-        } catch (error) {
-
-        }
-    }
 
     inputData = inputData
-        .filter(row => row[control.year.filter.field] === control.year.filter.equal)
+        .filter(row => row[year.field] === year.value)
         .map(({ tonnage, occurence, tonnage_class, ...rest }) => {
             return {
                 tonnage: Number(tonnage),
@@ -109,7 +106,7 @@ export default function GraphViz({
                 }
             })
 
-            xValues.add(rest[control.y.field])
+            xValues.add(rest[y.field])
 
             if (tonnage < minTonnage) { minTonnage = tonnage; }
             if (tonnage > maxTonnage) { maxTonnage = tonnage; }
@@ -119,12 +116,12 @@ export default function GraphViz({
         }
     })
 
-    if (control.y.field === undefined || control.aggregate.field === undefined) {
+    if (y.field === undefined || aggregate.field === undefined) {
         return null;
     }
 
     let setSize;
-    switch (control.aggregate.field) {
+    switch (aggregate.field) {
         case 'tonnage':
             setSize = scaleLinear(
                 [minTonnage, maxTonnage],
@@ -141,7 +138,7 @@ export default function GraphViz({
     }
 
     let setColor;
-    switch (control.y.field) {
+    switch (y.field) {
         case 'homeport':
             setColor = scaleOrdinal()
                 .domain(Array.from(xValues))
@@ -187,8 +184,8 @@ export default function GraphViz({
             return {
                 id: key,
                 label: key,
-                size: setSize(attributes[control.aggregate.field]),
-                color: setColor(attributes[control.y.field]),
+                size: setSize(attributes[aggregate.field]),
+                color: setColor(attributes[y.field]),
                 ...attributes
             }
         }),

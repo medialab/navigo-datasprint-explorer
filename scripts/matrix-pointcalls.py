@@ -32,7 +32,7 @@ fields = list(fields)
 
 rows = []
 
-CSV_FILE_OUTPUT = '../public/data/matrix-pointcalls.csv'
+CSV_FILE_OUTPUT = '../public/data/pointcalls.csv'
 
 for year in ['1787', '1789']:
     CSV_FILE_INPUT = '../data/navigo_all_pointcalls_' + year + '.csv'
