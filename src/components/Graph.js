@@ -9,19 +9,35 @@ export default function GraphViz({
     data: inputData,
 
     year,
-    action,
     filters,
-    x,
     y,
     aggregate,
-    additionalFiltersX,
-    additionalFiltersY,
-    displayNullValues
+    displayNullValuesState,
+    additionalFiltersY
 }) {
     const graph = new _Graph();
+    const additionalFilters = additionalFiltersY.map(filter => filter.value);
 
     inputData = inputData
-        .filter(row => row[year.field] === year.value)
+        .filter(row => {
+            if (row[year.field] !== year.value) {
+                return false;
+            }
+
+            if (filters.value !== 'all' && row[filters.field] !== filters.value) {
+                return false;
+            }
+
+            if (additionalFilters.includes(row[y.field])) {
+                return false;
+            }
+
+            if (displayNullValuesState === true && row[y.field] === '') {
+                return false;
+            }
+
+            return true;
+        })
         .map(({ tonnage, occurence, tonnage_class, ...rest }) => {
             return {
                 tonnage: Number(tonnage),
@@ -180,7 +196,7 @@ export default function GraphViz({
 
     const graphologyExport = graph.export();
     const graphExport = {
-        nodes: graphologyExport.nodes.map(({ key, attributes }, i) => {
+        nodes: graphologyExport.nodes.map(({ key, attributes }) => {
             return {
                 id: key,
                 label: key,

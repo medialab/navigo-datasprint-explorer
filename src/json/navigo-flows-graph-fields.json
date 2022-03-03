@@ -3,6 +3,11 @@
         { "field": "year", "value": "1787", "label": "1787"},
         { "field": "year", "value": "1789", "label": "1789"}
     ],
+    "filters": [
+        { "field": "", "value": "all", "label": "tout"},
+        { "field": "departure", "value": "Dunkerque", "label": "départs du port de Dunkerque"},
+        { "field": "destination", "value": "Dunkerque", "label": "arrivées au port de Dunkerque"}
+    ],
     "groups": [
         { "field": "destination_state_1789_fr", "label": "pays de destination (destination_state_1789_fr)"},
         { "field": "departure_state_1789_fr", "label": "pays de départ (departure_state_1789_fr)"},
@@ -11,5 +16,6 @@
     "aggregation": [
         { "field": "tonnage", "label": "tonnage", "aggregate": "sum"},
         { "field": "occurence", "label": "nombre de flux", "aggregate": "count"}
-    ]
+    ],
+    "actions": []
 }

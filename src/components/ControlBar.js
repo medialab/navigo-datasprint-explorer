@@ -4,7 +4,6 @@ import ControlAdditionalFilters from './ControlAdditionalFilters';
 
 export default function ControlBar ({
     fields,
-    data,
     type,
 
     xValues,
@@ -81,7 +80,7 @@ export default function ControlBar ({
             }
 
             {
-                action &&
+                action && type !== 'graphe' &&
                 <ControlSelect
                     label="Voir avec action"
                     value={JSON.stringify(action)}
@@ -119,7 +118,7 @@ export default function ControlBar ({
             }
 
             {
-                x &&
+                x && type === 'matrice' &&
                 <ControlSelect
                     label="Axe X"
                     value={JSON.stringify(x)}
