@@ -14,17 +14,17 @@ export default function Viz ({
     sourceFilesState
 }) {
     /** @type {[Object, Function]} */
-    const [year, setYear] = useState(fields?.years[0]);
+    const [year, setYear] = useState(fields?.years[0] || []);
     /** @type {[Object, Function]} */
-    const [action, setAction] = useState(fields?.actions[0]);
+    const [action, setAction] = useState(fields?.actions[0] || []);
     /** @type {[Object, Function]} */
-    const [filters, setFilters] = useState(fields?.filters[0]);
+    const [filters, setFilters] = useState(fields?.filters[0] || []);
     /** @type {[Object, Function]} */
-    const [x, setX] = useState(fields?.groups[0]);
+    const [x, setX] = useState(fields?.groups[0] || []);
     /** @type {[Object, Function]} */
-    const [y, setY] = useState(fields?.groups[1]);
+    const [y, setY] = useState(fields?.groups[1] || []);
     /** @type {[Object, Function]} */
-    const [aggregate, setAggregate] = useState(fields?.aggregation[0]);
+    const [aggregate, setAggregate] = useState(fields?.aggregation[0] || []);
     /** @type {[Object[], Function]} */
     const [additionalFiltersX, setAdditionalFiltersX] = useState([]);
     /** @type {[Object[], Function]} */
@@ -37,6 +37,8 @@ export default function Viz ({
         return listValues(data, x.field);
     });
     const [yValues, setYValues] = useState(listValues(data, y.field));
+
+    console.log(x);
 
     useEffect(() => {
         if (!x) { return []; }
@@ -62,8 +64,6 @@ export default function Viz ({
 
         setYValues(newList);
     }, [y]);
-
-    console.log('render viz');
 
     return (
         <div className='columns'>

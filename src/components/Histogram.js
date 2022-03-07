@@ -37,7 +37,6 @@ export default function Histogram({
             {"filter": { "field": year.field, "equal": year.value } },
             {"filter": { "field": action.field, "equal": action.value } },
             ...(displayNullValues === false ? [
-                { "filter": `datum.${x.field} != ''` },
                 { "filter": `datum.${y.field} != ''` }
             ] : []),
             ...additionalFiltersX
