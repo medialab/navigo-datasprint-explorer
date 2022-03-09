@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import ControlSelect from './ControlSelect';
 import ControlAdditionalFilters from './ControlAdditionalFilters';
 
@@ -185,6 +185,8 @@ export default function ControlBar ({
             </label>
 
             <ControlAdditionalFilters
+                type={type}
+
                 xValues={xValues}
                 yValues={yValues}
                 x={x}

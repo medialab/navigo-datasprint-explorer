@@ -56,7 +56,7 @@ export default function GraphViz({
             if (graph.hasNode(nodeName)) {
                 graph.updateNodeAttributes(nodeName, attr => {
                     const tonnageClass = Object.keys(row.tonnage_class)[0];
-                    // console.log(attr.tonnage_class[tonnageClass]);
+
                     return {
                         ...attr,
                         tonnage: attr.tonnage + row['tonnage'],

@@ -2,6 +2,8 @@ import React from 'react';
 import ControlSelect from './ControlSelect';
 
 export default function ControlAdditionalFilters({
+    type,
+
     xValues,
     yValues,
     x,
@@ -11,6 +13,10 @@ export default function ControlAdditionalFilters({
 }) {
     const [additionalFiltersX, setAdditionalFiltersX] = additionalFiltersXState;
     const [additionalFiltersY, setAdditionalFiltersY] = additionalFiltersYState;
+
+    if (type !== 'matrice') {
+        x = false;
+    }
 
     function addInputFilterX () {
         setAdditionalFiltersX([

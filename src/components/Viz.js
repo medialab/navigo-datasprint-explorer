@@ -14,17 +14,17 @@ export default function Viz ({
     sourceFilesState
 }) {
     /** @type {[Object, Function]} */
-    const [year, setYear] = useState(fields?.years[0] || []);
+    const [year, setYear] = useState(fields?.years[0] || {});
     /** @type {[Object, Function]} */
-    const [action, setAction] = useState(fields?.actions[0] || []);
+    const [action, setAction] = useState(fields?.actions[0] || {});
     /** @type {[Object, Function]} */
-    const [filters, setFilters] = useState(fields?.filters[0] || []);
+    const [filters, setFilters] = useState(fields?.filters[0] || {});
     /** @type {[Object, Function]} */
     const [x, setX] = useState(fields?.groups[0] || []);
     /** @type {[Object, Function]} */
-    const [y, setY] = useState(fields?.groups[1] || []);
+    const [y, setY] = useState(fields?.groups[1] || {});
     /** @type {[Object, Function]} */
-    const [aggregate, setAggregate] = useState(fields?.aggregation[0] || []);
+    const [aggregate, setAggregate] = useState(fields?.aggregation[0] || {});
     /** @type {[Object[], Function]} */
     const [additionalFiltersX, setAdditionalFiltersX] = useState([]);
     /** @type {[Object[], Function]} */
@@ -33,23 +33,21 @@ export default function Viz ({
     const [displayNullValues, setDisplayNullValues] = useState(true);
     /** @type {[String[] Function]} */
     const [xValues, setXValues] = useState(() => {
-        if (!x) { return []; }
-        return listValues(data, x.field);
+        if (type === 'matrice') {
+            return listValues(data, x.field); }
+
+        return [];
     });
     const [yValues, setYValues] = useState(listValues(data, y.field));
 
-    console.log(x);
-
     useEffect(() => {
-        if (!x) { return []; }
         const newList = listValues(data, x.field);
 
         if (JSON.stringify(xValues) === JSON.stringify(newList)) {
             return;
         }
 
-        console.log('x values change');
-
+        setAdditionalFiltersX([]);
         setXValues(newList);
     }, [x]);
 
@@ -60,8 +58,7 @@ export default function Viz ({
             return;
         }
 
-        console.log('y values change');
-
+        setAdditionalFiltersY([]);
         setYValues(newList);
     }, [y]);
 

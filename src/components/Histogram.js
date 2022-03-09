@@ -39,10 +39,6 @@ export default function Histogram({
             ...(displayNullValues === false ? [
                 { "filter": `datum.${y.field} != ''` }
             ] : []),
-            ...additionalFiltersX
-                .map((filter) => {
-                    return { "filter": `datum.${x.field} != "${filter.value}"` }
-                }),
             ...additionalFiltersY
                 .map((filter) => {
                     return { "filter": `datum.${y.field} != "${filter.value}"` }
