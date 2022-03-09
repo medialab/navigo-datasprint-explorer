@@ -30,6 +30,7 @@ export default function ControlBar ({
     const [displayNullValues, setDisplayNullValues] = displayNullValuesState;
     const [sourceFiles, setSourceFiles] = sourceFilesState;
 
+
     return (
         <form
             className='column'
@@ -140,7 +141,7 @@ export default function ControlBar ({
             {
                 y &&
                 <ControlSelect
-                    label="Axe Y"
+                    label={type === 'graphe' ? 'Couleur des nœuds' : "Axe Y"}
                     value={JSON.stringify(y)}
                     setter={(input) => setY(JSON.parse(input))}
                     options={
@@ -159,7 +160,7 @@ export default function ControlBar ({
             {
                 aggregate &&
                 <ControlSelect
-                    label="Aggrégé par"
+                    label="Agrégé par"
                     value={JSON.stringify(aggregate)}
                     setter={(input) => setAggregate(JSON.parse(input))}
                     options={
