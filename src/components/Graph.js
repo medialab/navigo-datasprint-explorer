@@ -174,6 +174,7 @@ export default function GraphViz({
             break;
 
         case 'tonnage_class':
+        default:
             setColor = scaleOrdinal()
                 .domain([
                     '[1-20]',
