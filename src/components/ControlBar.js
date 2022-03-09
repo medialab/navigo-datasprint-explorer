@@ -43,7 +43,7 @@ export default function ControlBar ({
                 <ControlSelect
                     label="Voir la source"
                     value={JSON.stringify(sourceFiles)}
-                    setter={(input) => setYear(JSON.parse(input))}
+                    setter={(input) => setSourceFiles(JSON.parse(input))}
                     options={
                         [
                             { data: 'pointcalls.csv', fields: 'navigo-pointcalls-fields.json' },
