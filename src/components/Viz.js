@@ -61,7 +61,7 @@ export default function Viz ({
         setAdditionalFiltersY([]);
         setYValues(newList);
     }, [y]);
-
+    const sourceType = sourceFilesState[0]?.data.includes('flows') ? 'flows' : 'pointcalls';
     return (
         <div className='columns'>
             <ControlBar
@@ -73,6 +73,7 @@ export default function Viz ({
                 yValues={yValues}
 
                 sourceFilesState={sourceFilesState}
+                sourceType={sourceType}
                 yearState={[year, setYear]}
                 actionState={[action, setAction]}
                 filtersState={[filters, setFilters]}
@@ -92,6 +93,7 @@ export default function Viz ({
                     year={year}
                     action={action}
                     filters={filters}
+                    sourceType={sourceType}
                     x={x}
                     y={y}
                     aggregate={aggregate}
@@ -111,6 +113,7 @@ export default function Viz ({
                     filters={filters}
                     y={y}
                     aggregate={aggregate}
+                    sourceType={sourceType}
                     additionalFiltersX={additionalFiltersX}
                     additionalFiltersY={additionalFiltersY}
                     displayNullValues={displayNullValues}

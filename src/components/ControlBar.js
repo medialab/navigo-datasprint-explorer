@@ -10,6 +10,7 @@ export default function ControlBar ({
     yValues,
 
     sourceFilesState,
+    sourceType,
     yearState,
     actionState,
     filtersState,
@@ -43,7 +44,7 @@ export default function ControlBar ({
                 <ControlSelect
                     label="Voir la source"
                     value={JSON.stringify(sourceFiles)}
-                    setter={(input) => setYear(JSON.parse(input))}
+                    setter={(input) => setSourceFiles(JSON.parse(input))}
                     options={
                         [
                             { data: 'pointcalls.csv', fields: 'navigo-pointcalls-fields.json' },
@@ -80,7 +81,7 @@ export default function ControlBar ({
             }
 
             {
-                action && type !== 'graphe' &&
+                action && type !== 'graphe' && sourceType === 'pointcalls' &&
                 <ControlSelect
                     label="Voir avec action"
                     value={JSON.stringify(action)}

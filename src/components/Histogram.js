@@ -8,7 +8,8 @@ export default function Histogram({
     year,
     action,
     filters,
-    x,
+    sourceType,
+    // x,
     y,
     aggregate,
     additionalFiltersX,
@@ -35,7 +36,7 @@ export default function Histogram({
         'transform': [
             {"filter": { "field": filters.field, "equal": filters.value } },
             {"filter": { "field": year.field, "equal": year.value } },
-            {"filter": { "field": action.field, "equal": action.value } },
+            sourceType === 'flows' ? null : {"filter": { "field": action.field, "equal": action.value } },
             ...(displayNullValues === false ? [
                 { "filter": `datum.${y.field} != ''` }
             ] : []),
@@ -43,7 +44,7 @@ export default function Histogram({
                 .map((filter) => {
                     return { "filter": `datum.${y.field} != "${filter.value}"` }
                 }),
-        ],
+        ].filter(f => f),
     }
 
     let data = {

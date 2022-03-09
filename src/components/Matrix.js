@@ -8,6 +8,7 @@ export default function Matrix({
     year,
     action,
     filters,
+    sourceType,
     x,
     y,
     aggregate,
@@ -34,7 +35,7 @@ export default function Matrix({
         'transform': [
             {"filter": { "field": filters.field, "equal": filters.value } },
             {"filter": { "field": year.field, "equal": year.value } },
-            {"filter": { "field": action.field, "equal": action.value } },
+            sourceType === 'flows' ? null : {"filter": { "field": action.field, "equal": action.value } },
             ...(displayNullValues === false ? [
                 { "filter": `datum.${x.field} != ''` },
                 { "filter": `datum.${y.field} != ''` }
@@ -47,7 +48,7 @@ export default function Matrix({
                 .map((filter) => {
                     return { "filter": `datum.${y.field} != "${filter.value}"` }
                 }),
-        ],
+        ].filter(f => f),
         "config": {
             "axis": { "grid": true, "tickBand": "extent" }
         }
