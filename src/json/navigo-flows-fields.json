@@ -14,7 +14,9 @@
     "groups": [
         { "field": "homeport", "label": "port d'attache (homeport)"},
         { "field": "homeport_state_1789_fr", "label": "pays d'attache (homeport_state_1789_fr)"},
+        { "field": "departure", "label": "port de départ (departure)"},
         { "field": "departure_state_1789_fr", "label": "pays de départ (departure_state_1789_fr)"},
+        { "field": "destination", "label": "port de destination (destination)"},
         { "field": "destination_state_1789_fr", "label": "pays de destination (destination_state_1789_fr)"},
         { "field": "flag", "label": "pays du pavillon (flag)"},
         { "field": "tonnage_class", "label": "classe de tonnage (tonnage_class)"}
