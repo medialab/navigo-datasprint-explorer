@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 
 import { fetchData, fetchFields } from '../utils/fetch';
 
@@ -87,22 +87,33 @@ export default function App ({
         }
     }, [viz]);
 
-    const routes = {
-        'success':
-            <Viz
-                data={data}
-                fields={fields}
-                type={viz}
-                sourceFilesState={[sourceFiles, setSourceFiles]}
-            />,
-        'loading': <Loader message="Chargement en cours" />,
-        'failed': <Loader message="Échec du chargement" />
-    }
+    const renderMainContent = useMemo(() => {
+        return () => {
+            switch (loadingState) {
+                case 'success':
+                    return (
+                        <Viz
+                            data={data}
+                            fields={fields}
+                            type={viz}
+                            sourceFilesState={[sourceFiles, setSourceFiles]}
+                        />
+                    )
+
+                case 'loading':
+                    return <Loader message="Chargement en cours" />;
+
+                case 'failed':
+                default:
+                    return <Loader message="Échec du chargement" />;
+            }
+        }
+    }, [loadingState, data, fields, viz, setSourceFiles])
 
     return (
         <>
             <Header vizState={[viz, setViz]} />
-            { routes[loadingState] }
+            { renderMainContent() }
         </>
     );
     

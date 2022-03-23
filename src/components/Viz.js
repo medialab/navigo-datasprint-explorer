@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 
 import ControlBar from './ControlBar';
 import Matrix from './Matrix';
@@ -31,36 +31,16 @@ export default function Viz ({
     const [additionalFiltersY, setAdditionalFiltersY] = useState([]);
     /** @type {[Boolean Function]} */
     const [displayNullValues, setDisplayNullValues] = useState(true);
-    /** @type {[String[] Function]} */
-    const [xValues, setXValues] = useState(() => {
-        if (type === 'matrice') {
-            return listValues(data, x.field); }
 
-        return [];
-    });
-    const [yValues, setYValues] = useState(listValues(data, y.field));
-
-    useEffect(() => {
-        const newList = listValues(data, x.field);
-
-        if (JSON.stringify(xValues) === JSON.stringify(newList)) {
-            return;
-        }
-
-        setAdditionalFiltersX([]);
-        setXValues(newList);
+    /** @type {Array} */
+    const xValues = useMemo(() => {
+        return listValues(data, x.field)
     }, [x]);
-
-    useEffect(() => {
-        const newList = listValues(data, y.field);
-
-        if (JSON.stringify(yValues) === JSON.stringify(newList)) {
-            return;
-        }
-
-        setAdditionalFiltersY([]);
-        setYValues(newList);
+    /** @type {Array} */
+    const yValues = useMemo(() => {
+        return listValues(data, y.field)
     }, [y]);
+
     const sourceType = sourceFilesState[0]?.data.includes('flows') ? 'flows' : 'pointcalls';
     return (
         <div className='columns'>
